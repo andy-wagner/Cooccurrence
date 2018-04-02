@@ -6,6 +6,8 @@ import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
 
+import java.util.concurrent.ThreadPoolExecutor;
+
 public abstract class TermDocumentMatrixLoader {
 
     private int totalDocs;
@@ -31,9 +33,7 @@ public abstract class TermDocumentMatrixLoader {
         value.clear();
     }
 
-    public void run() {
 
-    }
 
     //    public Set<>
 
