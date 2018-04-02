@@ -24,6 +24,17 @@
             <artifactId>guava</artifactId>
             <version>24.1-jre</version>
         </dependency>
+        <dependency>
+            <groupId>edu.illinois.cs.cogcomp</groupId>
+            <artifactId>illinois-core-utilities</artifactId>
+            <version>4.0.3</version>
+        </dependency>
     </dependencies>
-
+    <repositories>
+        <repository>
+            <id>CogCompSoftware</id>
+            <name>CogCompSoftware</name>
+            <url>http://cogcomp.org/m2repo/</url>
+        </repository>
+    </repositories>
 </project>
