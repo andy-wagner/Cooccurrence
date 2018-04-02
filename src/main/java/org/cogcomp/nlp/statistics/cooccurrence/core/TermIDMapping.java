@@ -6,8 +6,12 @@ public class TermIDMapping{
     public HashMap<String, Integer> termIDMap;
 
     public TermIDMapping() {
-        termIDMap = new HashMap<String, Integer>();
+        termIDMap = new HashMap<>();
     }
 
+    public void put(String term, Integer id) {
+        termIDMap.put(term, id);
+    }
 
+    public void
 }
