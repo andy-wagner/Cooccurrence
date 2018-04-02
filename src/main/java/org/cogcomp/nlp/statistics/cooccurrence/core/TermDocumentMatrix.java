@@ -1,14 +1,18 @@
 package org.cogcomp.nlp.statistics.cooccurrence.core;
 
-import org.ojalgo.function.aggregator.Aggregator;
-import org.ojalgo.matrix.store.SparseStore;
+import org.la4j.matrix.sparse.CCSMatrix;
 
 /**
+ * Using a sparse matrix in Compressed Column Storage (CCS) format to store counts for each document
  * This is leveraging the fact that term-document matrices are usually very sparse, even compared to term-term matrices.
- * With just a little extra space complexity cost, we can preserve count per document, which is very important
+ * With just a little extra space complexity cost (Maybe not, depending on Sparsity)
+ * we can preserve count per document, which is very important
+ *
+ * @author Sihao Chen
  */
+
 public class TermDocumentMatrix {
-    private SparseStore<Double> termDocMat;
+    private CCSMatrix termDocMat;
 
     private int numTerm;
     private int numDoc;
@@ -16,21 +20,29 @@ public class TermDocumentMatrix {
     public TermDocumentMatrix(int numTerm, int numDoc) {
         this.numDoc = numDoc;
         this.numTerm = numTerm;
-        termDocMat = SparseStore.makePrimitive(numTerm, numDoc);
+        termDocMat = new CCSMatrix(numTerm, numDoc);
+    }
+
+    public TermDocumentMatrix(int numTerm, int numDoc, int[] colptr, int[] rowidx, double[] val) {
+        this.numDoc = numDoc;
+        this.numTerm = numTerm;
+        termDocMat = new CCSMatrix(numTerm, numDoc, val.length, val, rowidx, colptr);
     }
 
     public void addCount(int termID, int docID, int count) {
-        termDocMat.add(termID, docID, count);
+        termDocMat.set(termID, docID, count);
     }
 
     public double getTermTotalCount(int termID) {
-        return termDocMat.aggregateRow(termID, Aggregator.SUM);
+        return termDocMat.getRow(termID).sum();
     }
 
     public double getCoocurrenceCount(int term1, int term2) {
-        return termDocMat.sliceRow(term1).dot(termDocMat.sliceRow(term2));
+        return termDocMat.getRow(term1).innerProduct(termDocMat.getRow(term2));
     }
 
-
-
+    @Override
+    public String toString() {
+        return this.termDocMat.toString();
+    }
 }
