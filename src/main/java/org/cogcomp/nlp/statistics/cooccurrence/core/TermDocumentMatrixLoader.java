@@ -31,11 +31,15 @@ public abstract class TermDocumentMatrixLoader {
         value.clear();
     }
 
-    public void run() {
+    public abstract  feed() {
 
     }
 
-    //    public Set<>
+    private class Worker implements Runnable {
+        public void run() {
+
+        }
+    }
 
 
 }
