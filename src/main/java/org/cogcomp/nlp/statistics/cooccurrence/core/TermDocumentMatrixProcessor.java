@@ -8,8 +8,10 @@ import gnu.trove.list.array.TIntArrayList;
 import org.cogcomp.nlp.statistics.cooccurrence.util.Util;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public abstract class TermDocumentMatrixProcessor<T> {
 
@@ -57,7 +59,9 @@ public abstract class TermDocumentMatrixProcessor<T> {
 
         public void run() {
             List<String> terms = extractTerms(doc);
-//            terms.stream().map(t -> ter)
+            Map<Integer, Long> grouped = terms.stream()
+                    .map(t -> term2id.getIdFromTerm(t))
+                    .collect(Collectors.groupingBy(t -> t, Collectors.counting()));
             currentDocIndex.incrementAndGet();
         }
     }

@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class TermIDMapping{
-    
+
     public HashBiMap<String, Integer> termIDMap;
 
     public TermIDMapping() {
