@@ -3,11 +3,12 @@ package org.cogcomp.nlp.statistics.cooccurrence;
 import gnu.trove.list.array.TDoubleArrayList;
 import org.cogcomp.nlp.statistics.cooccurrence.core.TermDocumentMatrix;
 
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Test {
     public static void main(String[] args) {
-        testDirectInitialization();
+        testGroupingBy();
     }
 
     private static void testInsertSpeed() {
@@ -82,6 +83,18 @@ public class Test {
         long endTime = System.currentTimeMillis();
         double elapsed = (endTime - startTime) / 1000.0D;
         System.out.println("Elasped Time:\t" + String.format("%.5f", elapsed));
+
+    }
+
+    private static void testGroupingBy() {
+        List<Integer> l = new ArrayList<>(Arrays.asList(1, 2, 1, 1, 3, 3 ,4, 3));
+
+        Map<Integer, Long> grouped = l.stream()
+                .collect(Collectors.groupingBy(t -> t, Collectors.counting()));
+
+        for (Map.Entry<Integer, Long> ent: grouped.entrySet()) {
+            System.out.println(ent.getKey() + " " + ent.getValue().intValue());
+        }
 
     }
 

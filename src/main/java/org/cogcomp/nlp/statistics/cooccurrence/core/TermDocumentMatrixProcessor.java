@@ -9,6 +9,7 @@ import org.cogcomp.nlp.statistics.cooccurrence.util.Util;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -58,11 +59,28 @@ public abstract class TermDocumentMatrixProcessor<T> {
         }
 
         public void run() {
+
+            TIntArrayList _rowidx = new TIntArrayList();
+            TIntArrayList _colidx = new TIntArrayList();
+            TDoubleArrayList _value = new TDoubleArrayList();
+
             List<String> terms = extractTerms(doc);
             Map<Integer, Long> grouped = terms.stream()
                     .map(t -> term2id.getIdFromTerm(t))
+                    .filter(Objects::nonNull)
                     .collect(Collectors.groupingBy(t -> t, Collectors.counting()));
-            currentDocIndex.incrementAndGet();
+
+            for (Map.Entry<Integer, Long> ent: grouped.entrySet()) {
+                int termid = ent.getKey();
+                double count = ent.getValue().doubleValue();
+
+                _rowidx.add(termid);
+                _value.add(count);
+            }
+
+            int docid = currentDocIndex.getAndIncrement();
+            rowidx.addAll(_rowidx);
+            colidx.addAll()
         }
     }
 
