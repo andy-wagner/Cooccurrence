@@ -13,13 +13,14 @@ public class LinearIndexedLexicon implements IIndexedLexicon {
     protected BiMap<String, Integer> termIDMap;
 
     public LinearIndexedLexicon() {
-        termIDMap = HashBiMap.create();
-        termIDMap = Maps.synchronizedBiMap(termIDMap);
+        termIDMap = Maps.synchronizedBiMap(HashBiMap.create());
     }
 
-    public synchronized void put(String term) {
-        int id = termIDMap.size();
-        termIDMap.put(term, id);
+    public void put(String term) {
+        synchronized (termIDMap) {
+            int id = termIDMap.size();
+            termIDMap.put(term, id);
+        }
     }
 
     public Integer getIdFromTerm(String term) {
@@ -53,12 +54,26 @@ public class LinearIndexedLexicon implements IIndexedLexicon {
         terms.forEach(this::put);
     }
 
-    public List<String> saveToList() {
+    public List<String> toList() {
         List<String> lex = new ArrayList<>();
         for (int i = 0; i < termIDMap.size(); i++) {
             lex.add(this.getTermFromId(i));
         }
 
         return lex;
+    }
+
+    @Override
+    public String toString(){
+        StringBuilder str = new StringBuilder();
+        List<String> lex = this.toList();
+        for (int i = 0; i < lex.size(); i++) {
+            str.append(i)
+                    .append(":\t")
+                    .append(lex.get(i))
+                    .append('\n');
+        }
+
+        return str.toString();
     }
 }

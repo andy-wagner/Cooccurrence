@@ -41,6 +41,14 @@ public class TermDocumentMatrix {
         return termDocMat.getRow(term1).innerProduct(termDocMat.getRow(term2));
     }
 
+    public int getNumTerm() {
+        return numTerm;
+    }
+
+    public int getNumDoc() {
+        return numDoc;
+    }
+
     @Override
     public String toString() {
         return this.termDocMat.toString();

@@ -16,7 +16,6 @@ public class IncrementalLinearIndexedLexicon extends LinearIndexedLexicon {
     public Integer getIdFromTerm(String term) {
         if (!this.containsTerm(term)) {
             this.put(term);
-
         }
         return this.termIDMap.get(term);
     }

@@ -6,10 +6,11 @@ import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
 import org.cogcomp.nlp.statistics.cooccurrence.util.Util;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -36,6 +37,7 @@ public abstract class TermDocumentMatrixProcessor<T> {
         this.currentDocIndex = new AtomicInteger(0);
         this.exec = Util.getBoundedThreadPool(threads);
         this.term2id = term2id;
+        this.docs = docs;
     }
 
     public void reset() {
@@ -48,10 +50,18 @@ public abstract class TermDocumentMatrixProcessor<T> {
 
     public TermDocumentMatrix make() {
         Lock lock = new ReentrantLock();
+        Collection<Future<?>> futures = new LinkedList<>();
         for (T doc: docs) {
-            exec.execute(new Worker(doc, lock));
+            futures.add(exec.submit(new Worker(doc, lock)));
         }
 
+        for (Future<?> ft: futures) {
+            try {
+                ft.get();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         // reduce column indices to column pointers
         for (int i = 1; i < colidx.size(); i++)
             colidx.set(i, colidx.get(i) + colidx.get(i - 1));
@@ -60,7 +70,15 @@ public abstract class TermDocumentMatrixProcessor<T> {
         return new TermDocumentMatrix(term2id.getIDSize(), currentDocIndex.get());
     }
 
+    public IIndexedLexicon getLexicon() {
+        return term2id;
+    }
+
     public abstract List<String> extractTerms(T doc);
+
+    public void close() {
+        this.exec.shutdown();
+    }
 
     private class Worker implements Runnable {
 
@@ -104,6 +122,7 @@ public abstract class TermDocumentMatrixProcessor<T> {
             }
             finally {
                 lock.unlock();
+                System.out.println("Processed:\t" + doc.toString());
             }
         }
     }

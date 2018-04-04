@@ -34,6 +34,11 @@
             <artifactId>illinois-core-utilities</artifactId>
             <version>4.0.3</version>
         </dependency>
+        <dependency>
+            <groupId>edu.illinois.cs.cogcomp</groupId>
+            <artifactId>illinois-tokenizer</artifactId>
+            <version>4.0.3</version>
+        </dependency>
     </dependencies>
     <repositories>
         <repository>
