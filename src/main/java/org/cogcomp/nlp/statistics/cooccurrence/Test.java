@@ -95,7 +95,7 @@ public class Test {
         for (Map.Entry<Integer, Long> ent: grouped.entrySet()) {
             System.out.println(ent.getKey() + " " + ent.getValue().intValue());
         }
-
     }
+
 
 }

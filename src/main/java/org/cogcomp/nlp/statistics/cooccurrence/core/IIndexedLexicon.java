@@ -1,6 +1,6 @@
 package org.cogcomp.nlp.statistics.cooccurrence.core;
 
-public interface ITermIDMapping {
+public interface IIndexedLexicon {
     Integer getIdFromTerm(String term);
 
     boolean containsTerm(String term);

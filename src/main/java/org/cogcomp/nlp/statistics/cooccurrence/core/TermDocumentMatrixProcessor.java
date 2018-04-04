@@ -26,9 +26,9 @@ public abstract class TermDocumentMatrixProcessor<T> {
     private ThreadPoolExecutor exec;
 
     private Iterable<T> docs;
-    private ITermIDMapping term2id;
+    private IIndexedLexicon term2id;
 
-    public TermDocumentMatrixProcessor(Iterable<T> docs, ITermIDMapping term2id, int threads) {
+    public TermDocumentMatrixProcessor(Iterable<T> docs, IIndexedLexicon term2id, int threads) {
         this.rowidx = new TIntArrayList();
         this.colidx = new TIntArrayList();
         this.colidx.add(0);
