@@ -1,6 +1,5 @@
 package org.cogcomp.nlp.statistics.cooccurrence.core;
 
-import gnu.trove.TCollections;
 import gnu.trove.list.TDoubleList;
 import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TDoubleArrayList;
@@ -12,6 +11,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 public abstract class TermDocumentMatrixProcessor<T> {
@@ -25,12 +26,13 @@ public abstract class TermDocumentMatrixProcessor<T> {
     private ThreadPoolExecutor exec;
 
     private Iterable<T> docs;
-    private TermIDMapping term2id;
+    private ITermIDMapping term2id;
 
-    public TermDocumentMatrixProcessor(Iterable<T> docs, TermIDMapping term2id, int threads) {
-        this.rowidx = TCollections.synchronizedList(new TIntArrayList());
-        this.colidx = TCollections.synchronizedList(new TIntArrayList());
-        this.value = TCollections.synchronizedList(new TDoubleArrayList());
+    public TermDocumentMatrixProcessor(Iterable<T> docs, ITermIDMapping term2id, int threads) {
+        this.rowidx = new TIntArrayList();
+        this.colidx = new TIntArrayList();
+        this.colidx.add(0);
+        this.value = new TDoubleArrayList();
         this.currentDocIndex = new AtomicInteger(0);
         this.exec = Util.getBoundedThreadPool(threads);
         this.term2id = term2id;
@@ -40,13 +42,22 @@ public abstract class TermDocumentMatrixProcessor<T> {
         currentDocIndex.set(0);
         colidx.clear();
         rowidx.clear();
+        rowidx.add(0);
         value.clear();
     }
 
-    public void process() {
+    public TermDocumentMatrix make() {
+        Lock lock = new ReentrantLock();
         for (T doc: docs) {
-            exec.execute(new Worker(doc));
+            exec.execute(new Worker(doc, lock));
         }
+
+        // reduce column indices to column pointers
+        for (int i = 1; i < colidx.size(); i++)
+            colidx.set(i, colidx.get(i) + colidx.get(i - 1));
+
+        colidx.toArray();
+        return new TermDocumentMatrix(term2id.getIDSize(), currentDocIndex.get());
     }
 
     public abstract List<String> extractTerms(T doc);
@@ -54,14 +65,16 @@ public abstract class TermDocumentMatrixProcessor<T> {
     private class Worker implements Runnable {
 
         T doc;
-        public Worker(T doc) {
+        Lock lock;
+
+        public Worker(T doc, Lock lock) {
             this.doc = doc;
+            this.lock = lock;
         }
 
         public void run() {
 
             TIntArrayList _rowidx = new TIntArrayList();
-            TIntArrayList _colidx = new TIntArrayList();
             TDoubleArrayList _value = new TDoubleArrayList();
 
             List<String> terms = extractTerms(doc);
@@ -78,9 +91,20 @@ public abstract class TermDocumentMatrixProcessor<T> {
                 _value.add(count);
             }
 
-            int docid = currentDocIndex.getAndIncrement();
-            rowidx.addAll(_rowidx);
-            colidx.addAll()
+            // lock here
+            lock.lock();
+            try {
+                currentDocIndex.getAndIncrement();
+                rowidx.addAll(_rowidx);
+                colidx.add(grouped.size());
+                value.addAll(_value);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+            finally {
+                lock.unlock();
+            }
         }
     }
 
