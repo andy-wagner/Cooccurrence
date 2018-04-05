@@ -24,9 +24,9 @@ public abstract class TermDocumentMatrixProcessor<T> {
     private ExecutorService exec;
 
     private Iterable<T> docs;
-    private IIndexedLexicon term2id;
+    private final IncremantalIndexedLexicon term2id;
 
-    public TermDocumentMatrixProcessor(Iterable<T> docs, IIndexedLexicon term2id, int threads) {
+    public TermDocumentMatrixProcessor(Iterable<T> docs, IncremantalIndexedLexicon term2id, int threads) {
         this.rowidx = new TIntArrayList();
         this.colptr = new TIntArrayList();
         this.colptr.add(0);
@@ -70,11 +70,11 @@ public abstract class TermDocumentMatrixProcessor<T> {
             colptr.set(i, colptr.get(i) + colptr.get(i - 1));
 
         colptr.toArray();
-        return new TermDocumentMatrix(term2id.getIDSize(), currentDocIndex.get(),
+        return new TermDocumentMatrix(term2id.size(), currentDocIndex.get(),
                 colptr.toArray(), rowidx.toArray(), value.toArray());
     }
 
-    public IIndexedLexicon getLexicon() {
+    public IncremantalIndexedLexicon getLexicon() {
         return term2id;
     }
 
@@ -87,7 +87,7 @@ public abstract class TermDocumentMatrixProcessor<T> {
     private class Worker implements Runnable {
 
         T doc;
-        Lock lock;
+        final Lock lock;
 
         public Worker(T doc, Lock lock) {
             this.doc = doc;
@@ -100,13 +100,9 @@ public abstract class TermDocumentMatrixProcessor<T> {
             TDoubleArrayList _value = new TDoubleArrayList();
 
             List<String> terms = extractTerms(doc);
+
             Map<Integer, Long> grouped = terms.stream()
-                    .map(t -> {
-                        synchronized (term2id) {
-                            return term2id.getIdFromTerm(t);
-                        }
-                    })
-                    .filter(Objects::nonNull)
+                    .map(term2id::putOrGet)
                     .collect(Collectors.groupingBy(t -> t, Collectors.counting()));
 
             for (Map.Entry<Integer, Long> ent: grouped.entrySet()) {
@@ -118,20 +114,22 @@ public abstract class TermDocumentMatrixProcessor<T> {
             }
 
             // lock here
-            lock.lock();
-            try {
-                currentDocIndex.getAndIncrement();
-                rowidx.addAll(_rowidx);
-                colptr.add(grouped.size());
-                value.addAll(_value);
+            synchronized (lock) {
+                try {
+                    currentDocIndex.getAndIncrement();
+                    rowidx.addAll(_rowidx);
+                    colptr.add(grouped.size());
+                    value.addAll(_value);
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+                finally {
+//                lock.unlock();
+                    System.out.println("Processed:\t" + doc.toString());
+                }
             }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-            finally {
-                lock.unlock();
-                System.out.println("Processed:\t" + doc.toString());
-            }
+
         }
     }
 

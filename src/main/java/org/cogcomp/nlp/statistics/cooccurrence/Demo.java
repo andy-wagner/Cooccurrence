@@ -6,8 +6,7 @@ import edu.illinois.cs.cogcomp.core.io.IOUtils;
 import edu.illinois.cs.cogcomp.core.io.LineIO;
 import edu.illinois.cs.cogcomp.nlp.tokenizer.StatefulTokenizer;
 import edu.illinois.cs.cogcomp.nlp.utility.TokenizerTextAnnotationBuilder;
-import org.cogcomp.nlp.statistics.cooccurrence.core.IIndexedLexicon;
-import org.cogcomp.nlp.statistics.cooccurrence.core.IncrementalLinearIndexedLexicon;
+import org.cogcomp.nlp.statistics.cooccurrence.core.IncremantalIndexedLexicon;
 import org.cogcomp.nlp.statistics.cooccurrence.core.TermDocumentMatrix;
 import org.cogcomp.nlp.statistics.cooccurrence.core.TermDocumentMatrixProcessor;
 
@@ -33,7 +32,7 @@ public class Demo {
         }
 
         TermDocumentMatrixProcessor<String> proc = new TermDocumentMatrixProcessor<String>(docs,
-                new IncrementalLinearIndexedLexicon(), numThreads) {
+                new IncremantalIndexedLexicon(), numThreads) {
             @Override
             public List<String> extractTerms(String doc) {
 
@@ -54,12 +53,18 @@ public class Demo {
         };
 
         TermDocumentMatrix mat = proc.make();
-        IIndexedLexicon lex = proc.getLexicon();
+        IncremantalIndexedLexicon lex = proc.getLexicon();
 
-        // Get the id of "is" in lexicon
-        Integer id = lex.getIdFromTerm("said");
+        // Get the id of "said" in lexicon
+        Integer id = lex.putOrGet("love");
 
         // result changes every time
-        System.out.println(mat.getTermTotalCount(id));
+        System.out.println("Count:\t" + mat.getTermTotalCount(id));
+        System.out.println("ID count\t" + lex.size());
+        System.out.println("Mat entries\t" + mat.getNumTerm());
+        System.out.println("Docwise count\t" + mat.getDocwiseTermCount(id));
+
+//        System.out.println(mat.toString());
+        proc.close();
     }
 }

@@ -1,5 +1,6 @@
 package org.cogcomp.nlp.statistics.cooccurrence.core;
 
+import org.la4j.Vector;
 import org.la4j.matrix.sparse.CCSMatrix;
 
 /**
@@ -29,10 +30,6 @@ public class TermDocumentMatrix {
         termDocMat = new CCSMatrix(numTerm, numDoc, val.length, val, rowidx, colptr);
     }
 
-    public void addCount(int termID, int docID, int count) {
-        termDocMat.set(termID, docID, count);
-    }
-
     public double getTermTotalCount(int termID) {
         return termDocMat.getRow(termID).sum();
     }
@@ -47,6 +44,10 @@ public class TermDocumentMatrix {
 
     public int getNumDoc() {
         return numDoc;
+    }
+
+    public Vector getDocwiseTermCount(int termID) {
+        return termDocMat.getRow(termID);
     }
 
     @Override

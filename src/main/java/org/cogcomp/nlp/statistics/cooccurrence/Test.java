@@ -8,45 +8,32 @@ import java.util.stream.Collectors;
 
 public class Test {
     public static void main(String[] args) {
-        testGroupingBy();
+        testDirectInitialization();
     }
 
-    private static void testInsertSpeed() {
-        long startTime = System.currentTimeMillis();
-
-        Random rand = new Random();
-        TermDocumentMatrix mat = new TermDocumentMatrix(200000, 5000000);
-
-        long endTime = System.currentTimeMillis();
-        double elapsed = (endTime - startTime) / 1000.0D;
-        System.out.println("Initialization Time:\t" + String.format("%.5f", elapsed));
-        startTime = System.currentTimeMillis();
-
-        for (int i = 0; i < 200000; i++) {
-            int term = rand.nextInt(200000);
-            int doc = rand.nextInt(5000000);
-            int count = rand.nextInt(100);
-            mat.addCount(term, doc, count);
-        }
-
-        endTime = System.currentTimeMillis();
-        elapsed = (endTime - startTime) / 1000.0D;
-        System.out.println("Elasped Time:\t" + String.format("%.5f", elapsed));
-    }
-
-    private static void testOccurrence() {
-        TermDocumentMatrix mat = new TermDocumentMatrix(3, 3);
-
-        for (int i = 0; i < 3; i++) {
-            for (int k = 0; k < 3; k++) {
-                mat.addCount(i, k, i * 3 + k);
-            }
-        }
-
-        System.out.println(mat.getTermTotalCount(1));
-        System.out.println(mat.getCoocurrenceCount(1, 0));
-    }
-
+//    private static void testInsertSpeed() {
+//        long startTime = System.currentTimeMillis();
+//
+//        Random rand = new Random();
+//        TermDocumentMatrix mat = new TermDocumentMatrix(200000, 5000000);
+//
+//        long endTime = System.currentTimeMillis();
+//        double elapsed = (endTime - startTime) / 1000.0D;
+//        System.out.println("Initialization Time:\t" + String.format("%.5f", elapsed));
+//        startTime = System.currentTimeMillis();
+//
+//        for (int i = 0; i < 200000; i++) {
+//            int term = rand.nextInt(200000);
+//            int doc = rand.nextInt(5000000);
+//            int count = rand.nextInt(100);
+//            mat.addCount(term, doc, count);
+//        }
+//
+//        endTime = System.currentTimeMillis();
+//        elapsed = (endTime - startTime) / 1000.0D;
+//        System.out.println("Elasped Time:\t" + String.format("%.5f", elapsed));
+//    }
+//
     private static void testDirectInitialization() {
         double[] value = {1, 5, 7, 2, 3, 6};
         int[] colptr = {0, 1, 3, 4, 5, 6};
