@@ -7,10 +7,7 @@ import gnu.trove.list.array.TIntArrayList;
 import org.cogcomp.nlp.statistics.cooccurrence.util.Util;
 
 import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -21,28 +18,28 @@ public abstract class TermDocumentMatrixProcessor<T> {
     private AtomicInteger currentDocIndex;
 
     private TIntList rowidx;
-    private TIntList colidx;
+    private TIntList colptr;
     private TDoubleList value;
 
-    private ThreadPoolExecutor exec;
+    private ExecutorService exec;
 
     private Iterable<T> docs;
     private IIndexedLexicon term2id;
 
     public TermDocumentMatrixProcessor(Iterable<T> docs, IIndexedLexicon term2id, int threads) {
         this.rowidx = new TIntArrayList();
-        this.colidx = new TIntArrayList();
-        this.colidx.add(0);
+        this.colptr = new TIntArrayList();
+        this.colptr.add(0);
         this.value = new TDoubleArrayList();
         this.currentDocIndex = new AtomicInteger(0);
-        this.exec = Util.getBoundedThreadPool(threads);
+        this.exec = Executors.newFixedThreadPool(threads);
         this.term2id = term2id;
         this.docs = docs;
     }
 
     public void reset() {
         currentDocIndex.set(0);
-        colidx.clear();
+        colptr.clear();
         rowidx.clear();
         rowidx.add(0);
         value.clear();
@@ -62,12 +59,19 @@ public abstract class TermDocumentMatrixProcessor<T> {
                 e.printStackTrace();
             }
         }
-        // reduce column indices to column pointers
-        for (int i = 1; i < colidx.size(); i++)
-            colidx.set(i, colidx.get(i) + colidx.get(i - 1));
+//        try {
+//            exec.awaitTermination(5, TimeUnit.SECONDS);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 
-        colidx.toArray();
-        return new TermDocumentMatrix(term2id.getIDSize(), currentDocIndex.get());
+        // reduce column indices to column pointers
+        for (int i = 1; i < colptr.size(); i++)
+            colptr.set(i, colptr.get(i) + colptr.get(i - 1));
+
+        colptr.toArray();
+        return new TermDocumentMatrix(term2id.getIDSize(), currentDocIndex.get(),
+                colptr.toArray(), rowidx.toArray(), value.toArray());
     }
 
     public IIndexedLexicon getLexicon() {
@@ -97,7 +101,11 @@ public abstract class TermDocumentMatrixProcessor<T> {
 
             List<String> terms = extractTerms(doc);
             Map<Integer, Long> grouped = terms.stream()
-                    .map(t -> term2id.getIdFromTerm(t))
+                    .map(t -> {
+                        synchronized (term2id) {
+                            return term2id.getIdFromTerm(t);
+                        }
+                    })
                     .filter(Objects::nonNull)
                     .collect(Collectors.groupingBy(t -> t, Collectors.counting()));
 
@@ -114,7 +122,7 @@ public abstract class TermDocumentMatrixProcessor<T> {
             try {
                 currentDocIndex.getAndIncrement();
                 rowidx.addAll(_rowidx);
-                colidx.add(grouped.size());
+                colptr.add(grouped.size());
                 value.addAll(_value);
             }
             catch (Exception e) {

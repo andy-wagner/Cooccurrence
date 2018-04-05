@@ -16,11 +16,9 @@ public class LinearIndexedLexicon implements IIndexedLexicon {
         termIDMap = Maps.synchronizedBiMap(HashBiMap.create());
     }
 
-    public void put(String term) {
-        synchronized (termIDMap) {
+    public synchronized void put(String term) {
             int id = termIDMap.size();
             termIDMap.put(term, id);
-        }
     }
 
     public Integer getIdFromTerm(String term) {
