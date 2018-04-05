@@ -56,7 +56,7 @@ public class Demo {
         IncremantalIndexedLexicon lex = proc.getLexicon();
 
         // Get the id of "said" in lexicon
-        Integer id = lex.putOrGet("love");
+        Integer id = lex.putOrGet("said");
 
         // result changes every time
         System.out.println("Count:\t" + mat.getTermTotalCount(id));
