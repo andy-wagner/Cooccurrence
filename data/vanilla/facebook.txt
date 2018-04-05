@@ -1,0 +1,22 @@
+The BBC has been told that about 1.1 million of them are UK-based.
+
+The overall figure had been previously quoted as being 50 million by the whistleblower Christopher Wylie.
+
+Facebook chief Mark Zuckerberg said "clearly we should have done more, and we will going forward".
+
+Zuckerberg: I'm still the man to lead Facebook
+
+During a press conference he said that he had previously assumed that if Facebook gave people tools, it was largely their responsibility to decide how to use them.
+
+But he added that it was "wrong in retrospect" to have had such a limited view.
+"Today, given what we know... I think we understand that we need to take a broader view of our responsibility," he said.
+
+"That we're not just building tools, but that we need to take full responsibility for the outcomes of how people use those tools as well."
+
+Mr Zuckerberg also announced an internal audit had uncovered a fresh problem. Malicious actors had been abusing a feature that let users search for one another by typing in email addresses or phone numbers into Facebook's search box.
+
+As a result, many people's public profile information had been "scraped" and matched to the contact details, which had been obtained from elsewhere.
+
+Facebook has blocked now blocked the facility.
+
+"It is reasonable to expect that if you had that [default] setting turned on, that in the last several years someone has probably accessed your public information in this way," Mr Zuckerberg said.
