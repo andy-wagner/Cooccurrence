@@ -1,6 +1,7 @@
 package org.cogcomp.nlp.statistics.cooccurrence;
 
 import gnu.trove.list.array.TDoubleArrayList;
+import gnu.trove.list.array.TIntArrayList;
 import org.cogcomp.nlp.statistics.cooccurrence.core.TermDocumentMatrix;
 
 import java.util.*;

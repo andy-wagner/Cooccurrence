@@ -19,7 +19,7 @@ import java.util.List;
 public class Demo {
     public static void main(String[] args) {
 
-        String demoDocsDir = "./data/vanilla/";
+        String demoDocsDir = "./data/vanilla-NYT/";
         int numThreads = 4;
 
 
@@ -56,9 +56,11 @@ public class Demo {
         IncremantalIndexedLexicon lex = proc.getLexicon();
 
         // Get the id of "said" in lexicon
-        Integer id = lex.putOrGet("said");
+        String word = "said";
+        int id = lex.putOrGet(word);
 
         // result changes every time
+        System.out.println("ID of " + word + ":\t" + id);
         System.out.println("Count:\t" + mat.getTermTotalCount(id));
         System.out.println("ID count\t" + lex.size());
         System.out.println("Mat entries\t" + mat.getNumTerm());

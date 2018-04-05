@@ -127,6 +127,7 @@ public abstract class TermDocumentMatrixProcessor<T> {
                 finally {
 //                lock.unlock();
                     System.out.println("Processed:\t" + doc.toString());
+                    System.out.println(grouped.toString());
                 }
             }
 

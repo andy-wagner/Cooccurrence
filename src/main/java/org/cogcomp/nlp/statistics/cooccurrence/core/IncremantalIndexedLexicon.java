@@ -10,7 +10,7 @@ import java.util.List;
 
 public class IncremantalIndexedLexicon {
 
-    protected final BiMap<String, Integer> termIDMap;
+    private final BiMap<String, Integer> termIDMap;
 
     public IncremantalIndexedLexicon() {
         termIDMap = HashBiMap.create();
