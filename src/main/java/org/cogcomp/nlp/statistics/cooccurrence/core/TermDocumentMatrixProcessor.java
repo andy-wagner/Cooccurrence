@@ -35,6 +35,7 @@ public abstract class TermDocumentMatrixProcessor<T> {
         this.exec = Executors.newFixedThreadPool(threads);
         this.term2id = term2id;
         this.docs = docs;
+        term2id.putOrGet("said"); //debug
     }
 
     public void reset() {
@@ -108,6 +109,9 @@ public abstract class TermDocumentMatrixProcessor<T> {
             for (Map.Entry<Integer, Long> ent: grouped.entrySet()) {
                 int termid = ent.getKey();
                 double count = ent.getValue().doubleValue();
+
+                if (termid == 0)
+                    System.out.println(count); // debug
 
                 _rowidx.add(termid);
                 _value.add(count);
