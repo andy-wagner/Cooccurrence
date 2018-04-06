@@ -39,6 +39,11 @@
             <artifactId>illinois-tokenizer</artifactId>
             <version>4.0.3</version>
         </dependency>
+        <dependency>
+            <groupId>org.ojalgo</groupId>
+            <artifactId>ojalgo</artifactId>
+            <version>45.0.0</version>
+        </dependency>
     </dependencies>
     <repositories>
         <repository>

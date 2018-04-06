@@ -7,7 +7,11 @@ import com.google.common.collect.Maps;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * A thread-safe indexed lexicon. Each time a new term is queried, the lexicon would memorize that term and assign an
+ * index to it.
+ *
+ */
 public class IncremantalIndexedLexicon {
 
     private final BiMap<String, Integer> termIDMap;
