@@ -15,7 +15,7 @@ import org.la4j.matrix.sparse.CCSMatrix;
 
 public class TermDocumentMatrix {
     private final CCSMatrix termDocMat;
-    
+
     private int numTerm;
     private int numDoc;
 

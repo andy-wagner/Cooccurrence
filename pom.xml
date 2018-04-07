@@ -15,9 +15,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.la4j</groupId>
-            <artifactId>la4j</artifactId>
-            <version>0.6.0</version>
+            <groupId>net.mikera</groupId>
+            <artifactId>vectorz</artifactId>
+            <version>0.48.0</version>
         </dependency>
         <dependency>
             <groupId>net.sf.trove4j</groupId>
@@ -38,11 +38,6 @@
             <groupId>edu.illinois.cs.cogcomp</groupId>
             <artifactId>illinois-tokenizer</artifactId>
             <version>4.0.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.ojalgo</groupId>
-            <artifactId>ojalgo</artifactId>
-            <version>45.0.0</version>
         </dependency>
     </dependencies>
     <repositories>
