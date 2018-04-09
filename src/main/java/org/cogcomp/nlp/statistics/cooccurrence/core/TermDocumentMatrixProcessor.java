@@ -70,7 +70,7 @@ public abstract class TermDocumentMatrixProcessor<T> {
 
         colptr.toArray();
         return new ImmutableTermDocumentMatrix(term2id.size(), currentDocIndex.get(),
-                colptr.toArray(), rowidx.toArray(), value.toArray());
+                colptr.toArray(), rowidx.toArray(), value.toArray(), term2id);
     }
 
     public IncremantalIndexedLexicon getLexicon() {

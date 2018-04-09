@@ -1,5 +1,6 @@
 package org.cogcomp.nlp.statistics.cooccurrence.core;
 
+import edu.illinois.cs.cogcomp.core.io.IOUtils;
 import edu.illinois.cs.cogcomp.core.io.LineIO;
 import org.la4j.Vector;
 import org.la4j.matrix.sparse.CCSMatrix;
@@ -7,6 +8,7 @@ import org.terracotta.modules.ehcache.collections.SerializationHelper;
 
 import java.io.*;
 import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * Using a sparse matrix in Compressed Column Storage (CCS) format to store counts for each document
@@ -31,12 +33,15 @@ public class ImmutableTermDocumentMatrix {
     int[] rowidx;
     double[] val;
 
-    protected ImmutableTermDocumentMatrix(int numTerm, int numDoc, int[] colptr, int[] rowidx, double[] val) {
+    final IncremantalIndexedLexicon lex;
+
+    protected ImmutableTermDocumentMatrix(int numTerm, int numDoc, int[] colptr, int[] rowidx, double[] val, IncremantalIndexedLexicon lex) {
         this.numDoc = numDoc;
         this.numTerm = numTerm;
         this.colptr = colptr;
         this.rowidx = rowidx;
         this.val = val;
+        this.lex = lex;
         termDocMat = new CCSMatrix(numTerm, numDoc, val.length, val, rowidx, colptr);
     }
 
@@ -65,8 +70,28 @@ public class ImmutableTermDocumentMatrix {
         return this.termDocMat.toString();
     }
 
+    /**
+     * Save the matrix into two files.
+     *
+     * 1. [$fileStem].lex will store the lexicon in linear order
+     * 2. [$fileStem].mat will store the actual data of the matrix. it will contain 3 lines
+     *      -- column pointers, row indices and values
+     *
+     * @param dir
+     * @param fileStem
+     */
+    public void save(String dir, String fileStem) throws IOException {
+        IOUtils.mkdir(dir);
+        String prefix = dir + File.separator + fileStem;
+        FileOutputStream matOut = new FileOutputStream(prefix + ".mat");
+        saveMat(matOut);
+        matOut.close();
+
+        LineIO.write(prefix + ".lex", Collections.singletonList(this.lex.toString()));
+    }
+
     // TODO: make this prettier, I haven't think of a great solution yet -- it's hard do use Generics for primitives in Java
-    public void save(OutputStream out) throws IOException {
+    private void saveMat(OutputStream out) throws IOException {
         StringBuilder str = new StringBuilder();
 
         for (int cp : colptr) {

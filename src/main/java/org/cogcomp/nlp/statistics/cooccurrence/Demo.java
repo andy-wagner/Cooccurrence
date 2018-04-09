@@ -69,9 +69,7 @@ public class Demo {
 
         // Try to save result!
         try {
-            FileOutputStream fout = new FileOutputStream("out/vanilla-nyt.mat");
-            mat.save(fout);
-            fout.close();
+            mat.save("out", "vanilla-nyt");
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -66,7 +66,7 @@ public class IncremantalIndexedLexicon {
         List<String> lex = this.toList();
         for (int i = 0; i < lex.size(); i++) {
             str.append(i)
-                    .append(":\t")
+                    .append("\t")
                     .append(lex.get(i))
                     .append('\n');
         }
