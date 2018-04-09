@@ -7,10 +7,11 @@ import edu.illinois.cs.cogcomp.core.io.LineIO;
 import edu.illinois.cs.cogcomp.nlp.tokenizer.StatefulTokenizer;
 import edu.illinois.cs.cogcomp.nlp.utility.TokenizerTextAnnotationBuilder;
 import org.cogcomp.nlp.statistics.cooccurrence.core.IncremantalIndexedLexicon;
-import org.cogcomp.nlp.statistics.cooccurrence.core.TermDocumentMatrix;
+import org.cogcomp.nlp.statistics.cooccurrence.core.ImmutableTermDocumentMatrix;
 import org.cogcomp.nlp.statistics.cooccurrence.core.TermDocumentMatrixProcessor;
 
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,7 +53,7 @@ public class Demo {
             }
         };
 
-        TermDocumentMatrix mat = proc.make();
+        ImmutableTermDocumentMatrix mat = proc.make();
         IncremantalIndexedLexicon lex = proc.getLexicon();
 
         // Get the id of "said" in lexicon
@@ -65,6 +66,15 @@ public class Demo {
         System.out.println("ID count\t" + lex.size());
         System.out.println("Mat entries\t" + mat.getNumTerm());
         System.out.println("Docwise count\t" + mat.getDocwiseTermCount(id));
+
+        // Try to save result!
+        try {
+            FileOutputStream fout = new FileOutputStream("out/vanilla-nyt.mat");
+            mat.save(fout);
+            fout.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 //        System.out.println(mat.toString());
         proc.close();

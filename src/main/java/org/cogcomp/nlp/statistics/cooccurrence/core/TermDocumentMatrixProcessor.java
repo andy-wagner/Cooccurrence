@@ -45,7 +45,7 @@ public abstract class TermDocumentMatrixProcessor<T> {
         value.clear();
     }
 
-    public TermDocumentMatrix make() {
+    public ImmutableTermDocumentMatrix make() {
         Lock lock = new ReentrantLock();
         Collection<Future<?>> futures = new LinkedList<>();
         for (T doc: docs) {
@@ -70,7 +70,7 @@ public abstract class TermDocumentMatrixProcessor<T> {
             colptr.set(i, colptr.get(i) + colptr.get(i - 1));
 
         colptr.toArray();
-        return new TermDocumentMatrix(term2id.size(), currentDocIndex.get(),
+        return new ImmutableTermDocumentMatrix(term2id.size(), currentDocIndex.get(),
                 colptr.toArray(), rowidx.toArray(), value.toArray());
     }
 

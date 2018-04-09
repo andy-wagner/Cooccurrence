@@ -25,6 +25,4 @@ public class Util {
         executor.allowCoreThreadTimeOut(true);
         return executor;
     }
-
-
 }
