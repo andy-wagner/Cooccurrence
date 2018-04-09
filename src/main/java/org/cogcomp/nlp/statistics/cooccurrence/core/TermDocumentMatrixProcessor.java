@@ -4,7 +4,6 @@ import gnu.trove.list.TDoubleList;
 import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
-import org.cogcomp.nlp.statistics.cooccurrence.util.Util;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -102,11 +101,15 @@ public abstract class TermDocumentMatrixProcessor<T> {
 
             List<String> terms = extractTerms(doc);
 
-            Map<Integer, Long> grouped = terms.stream()
+            List<Map.Entry<Integer, Long>> sorted = terms.stream()
                     .map(term2id::putOrGet)
-                    .collect(Collectors.groupingBy(t -> t, Collectors.counting()));
+                    .collect(Collectors.groupingBy(t -> t, Collectors.counting()))
+                    .entrySet()
+                    .stream()
+                    .sorted(Comparator.comparingInt(Map.Entry<Integer, Long>::getKey))
+                    .collect(Collectors.toList());
 
-            for (Map.Entry<Integer, Long> ent: grouped.entrySet()) {
+            for (Map.Entry<Integer, Long> ent: sorted) {
                 int termid = ent.getKey();
                 double count = ent.getValue().doubleValue();
 
@@ -117,26 +120,23 @@ public abstract class TermDocumentMatrixProcessor<T> {
                 _value.add(count);
             }
 
-            // lock here
-            synchronized (lock) {
-                try {
-                    currentDocIndex.getAndIncrement();
-                    rowidx.addAll(_rowidx);
-                    colptr.add(grouped.size());
-                    value.addAll(_value);
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
-                }
-                finally {
-//                lock.unlock();
-                    System.out.println("Processed:\t" + doc.toString());
-                    System.out.println(grouped.toString());
-                }
-            }
 
+            // lock here
+            lock.lock();
+            try {
+                currentDocIndex.getAndIncrement();
+                rowidx.addAll(_rowidx);
+                colptr.add(sorted.size());
+                value.addAll(_value);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+            finally {
+                System.out.println("Processed:\t" + doc.toString());
+                System.out.println(sorted.toString());
+                lock.unlock();
+            }
         }
     }
-
-
 }

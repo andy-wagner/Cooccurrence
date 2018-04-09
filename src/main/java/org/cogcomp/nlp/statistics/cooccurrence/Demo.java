@@ -56,7 +56,7 @@ public class Demo {
         IncremantalIndexedLexicon lex = proc.getLexicon();
 
         // Get the id of "said" in lexicon
-        String word = "said";
+        String word = "this";
         int id = lex.putOrGet(word);
 
         // result changes every time
