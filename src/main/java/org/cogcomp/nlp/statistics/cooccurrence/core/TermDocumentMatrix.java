@@ -1,6 +1,5 @@
 package org.cogcomp.nlp.statistics.cooccurrence.core;
 
-import org.ejml.data.DMatrixSparseCSC;
 import org.la4j.Vector;
 import org.la4j.matrix.sparse.CCSMatrix;
 
@@ -15,7 +14,7 @@ import org.la4j.matrix.sparse.CCSMatrix;
 
 public class TermDocumentMatrix {
     private final CCSMatrix termDocMat;
-    
+
     private int numTerm;
     private int numDoc;
 
