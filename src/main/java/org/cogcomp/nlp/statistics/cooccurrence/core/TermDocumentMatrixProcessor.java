@@ -34,7 +34,6 @@ public abstract class TermDocumentMatrixProcessor<T> {
         this.exec = Executors.newFixedThreadPool(threads);
         this.term2id = term2id;
         this.docs = docs;
-        term2id.putOrGet("said"); //debug
     }
 
     public void reset() {
