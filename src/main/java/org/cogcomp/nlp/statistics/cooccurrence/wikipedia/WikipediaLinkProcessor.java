@@ -26,12 +26,14 @@ public class WikipediaLinkProcessor {
         IOUtils.mkdir(outdir);
 
         List<String> pages = null;
+        System.out.print("Reading Links...");
         try {
             pages = LineIO.read(linksdir);
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
         }
+        System.out.println("Finished!");
 
         TermDocumentMatrixProcessor<String> proc = new TermDocumentMatrixProcessor<String>(pages,
                 new IncremantalIndexedLexicon(), numThreads) {
