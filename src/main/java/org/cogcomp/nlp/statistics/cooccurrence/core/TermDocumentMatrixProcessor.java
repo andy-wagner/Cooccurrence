@@ -100,6 +100,9 @@ public abstract class TermDocumentMatrixProcessor<T> {
 
             List<String> terms = extractTerms(doc);
 
+            if (terms.isEmpty())
+                return;
+
             List<Map.Entry<Integer, Long>> sorted = terms.stream()
                     .map(term2id::putOrGet)
                     .collect(Collectors.groupingBy(t -> t, Collectors.counting()))
@@ -122,8 +125,9 @@ public abstract class TermDocumentMatrixProcessor<T> {
 
             // lock here
             lock.lock();
+            int docid = -1;
             try {
-                currentDocIndex.getAndIncrement();
+                docid = currentDocIndex.getAndIncrement();
                 rowidx.addAll(_rowidx);
                 colptr.add(sorted.size());
                 value.addAll(_value);
@@ -132,8 +136,8 @@ public abstract class TermDocumentMatrixProcessor<T> {
                 e.printStackTrace();
             }
             finally {
-                System.out.println("Processed:\t" + doc.toString());
-                System.out.println(sorted.toString());
+                if (docid % 500 == 0)
+                    System.out.println("Processed:\t" + docid);
                 lock.unlock();
             }
         }

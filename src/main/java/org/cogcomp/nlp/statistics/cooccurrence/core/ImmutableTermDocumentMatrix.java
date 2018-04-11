@@ -4,10 +4,8 @@ import edu.illinois.cs.cogcomp.core.io.IOUtils;
 import edu.illinois.cs.cogcomp.core.io.LineIO;
 import org.la4j.Vector;
 import org.la4j.matrix.sparse.CCSMatrix;
-import org.terracotta.modules.ehcache.collections.SerializationHelper;
 
 import java.io.*;
-import java.util.Arrays;
 import java.util.Collections;
 
 /**
@@ -90,7 +88,7 @@ public class ImmutableTermDocumentMatrix {
         LineIO.write(prefix + ".lex", Collections.singletonList(this.lex.toString()));
     }
 
-    // TODO: make this prettier, I haven't think of a great solution yet -- it's hard do use Generics for primitives in Java
+    // TODO: make this prettier, I haven't think of a great solution yet -- it's hard to use Generics for primitives in Java
     private void saveMat(OutputStream out) throws IOException {
         StringBuilder str = new StringBuilder();
 
