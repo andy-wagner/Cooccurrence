@@ -12,11 +12,11 @@ import java.util.List;
  * index to it.
  *
  */
-public class IncremantalIndexedLexicon {
+public class IncrementalIndexedLexicon {
 
     private final BiMap<String, Integer> termIDMap;
 
-    public IncremantalIndexedLexicon() {
+    public IncrementalIndexedLexicon() {
         termIDMap = HashBiMap.create();
     }
 

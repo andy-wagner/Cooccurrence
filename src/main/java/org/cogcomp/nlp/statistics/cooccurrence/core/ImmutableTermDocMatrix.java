@@ -11,16 +11,16 @@ import java.util.Collections;
 /**
  * Using a sparse matrix in Compressed Column Storage (CCS) format to store counts for each document
  * This is leveraging the fact that term-document matrices are usually very sparse, even compared to term-term matrices.
- * With just a little extra space complexity cost (Maybe not, depending on Sparsity)
- * we can preserve count per document, which is very important
+ * With just a little extra space complexity cost (Maybe not, depending on sparsity)
+ * we can preserve n-gram counts per document, which is very important
  *
  * To optimize (parallel) import speed, I've made this matrix immutable.
- * Use @see org.cogcomp.nlp.statistics.cooccurrence.core.TermDocumentMatrixProcessor to generate the matrix.
+ * Use @see org.cogcomp.nlp.statistics.cooccurrence.core.TermDocMatrixProcessor to generate the matrix.
  *
  * @author Sihao Chen
  */
 
-public class ImmutableTermDocumentMatrix {
+public class ImmutableTermDocMatrix {
 
     private final CCSMatrix termDocMat;
 
@@ -31,9 +31,9 @@ public class ImmutableTermDocumentMatrix {
     int[] rowidx;
     double[] val;
 
-    final IncremantalIndexedLexicon lex;
+    final IncrementalIndexedLexicon lex;
 
-    protected ImmutableTermDocumentMatrix(int numTerm, int numDoc, int[] colptr, int[] rowidx, double[] val, IncremantalIndexedLexicon lex) {
+    protected ImmutableTermDocMatrix(int numTerm, int numDoc, int[] colptr, int[] rowidx, double[] val, IncrementalIndexedLexicon lex) {
         this.numDoc = numDoc;
         this.numTerm = numTerm;
         this.colptr = colptr;
@@ -61,6 +61,10 @@ public class ImmutableTermDocumentMatrix {
 
     public Vector getDocwiseTermCount(int termID) {
         return termDocMat.getRow(termID);
+    }
+
+    public IncrementalIndexedLexicon getLexicon() {
+        return this.lex;
     }
 
     @Override

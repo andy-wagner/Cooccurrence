@@ -6,12 +6,11 @@ import edu.illinois.cs.cogcomp.core.io.IOUtils;
 import edu.illinois.cs.cogcomp.core.io.LineIO;
 import edu.illinois.cs.cogcomp.nlp.tokenizer.StatefulTokenizer;
 import edu.illinois.cs.cogcomp.nlp.utility.TokenizerTextAnnotationBuilder;
-import org.cogcomp.nlp.statistics.cooccurrence.core.IncremantalIndexedLexicon;
-import org.cogcomp.nlp.statistics.cooccurrence.core.ImmutableTermDocumentMatrix;
-import org.cogcomp.nlp.statistics.cooccurrence.core.TermDocumentMatrixProcessor;
+import org.cogcomp.nlp.statistics.cooccurrence.core.ImmutableTermDocMatrix;
+import org.cogcomp.nlp.statistics.cooccurrence.core.IncrementalIndexedLexicon;
+import org.cogcomp.nlp.statistics.cooccurrence.core.TermDocMatrixProcessor;
 
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,8 +31,8 @@ public class Demo {
             e.printStackTrace();
         }
 
-        TermDocumentMatrixProcessor<String> proc = new TermDocumentMatrixProcessor<String>(docs,
-                new IncremantalIndexedLexicon(), numThreads) {
+        TermDocMatrixProcessor<String> proc = new TermDocMatrixProcessor<String>(docs,
+                new IncrementalIndexedLexicon(), numThreads) {
             @Override
             public List<String> extractTerms(String doc) {
 
@@ -53,8 +52,8 @@ public class Demo {
             }
         };
 
-        ImmutableTermDocumentMatrix mat = proc.make();
-        IncremantalIndexedLexicon lex = proc.getLexicon();
+        ImmutableTermDocMatrix mat = proc.make();
+        IncrementalIndexedLexicon lex = proc.getLexicon();
 
         // Get the id of "said" in lexicon
         String word = "this";

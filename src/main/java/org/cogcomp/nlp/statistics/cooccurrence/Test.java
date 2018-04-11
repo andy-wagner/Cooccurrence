@@ -1,21 +1,24 @@
 package org.cogcomp.nlp.statistics.cooccurrence;
 
 import gnu.trove.list.array.TDoubleArrayList;
-import org.cogcomp.nlp.statistics.cooccurrence.core.ImmutableTermDocumentMatrix;
+import org.cogcomp.nlp.statistics.cooccurrence.core.CooccurrenceMatrixFactory;
+import org.cogcomp.nlp.statistics.cooccurrence.core.ImmutableTermDocMatrix;
+import org.cogcomp.nlp.statistics.cooccurrence.core.IncrementalIndexedLexicon;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class Test {
     public static void main(String[] args) {
-        testListExpansion();
+        testLoadMat();
     }
 
 //    private static void testInsertSpeed() {
 //        long startTime = System.currentTimeMillis();
 //
 //        Random rand = new Random();
-//        ImmutableTermDocumentMatrix mat = new ImmutableTermDocumentMatrix(200000, 5000000);
+//        ImmutableTermDocMatrix mat = new ImmutableTermDocMatrix(200000, 5000000);
 //
 //        long endTime = System.currentTimeMillis();
 //        double elapsed = (endTime - startTime) / 1000.0D;
@@ -64,6 +67,20 @@ public class Test {
 
         for (Map.Entry<Integer, Long> ent: grouped.entrySet()) {
             System.out.println(ent.getKey() + " " + ent.getValue().intValue());
+        }
+    }
+
+    private static void testLoadMat() {
+        String matpath = "E:\\work\\corpora\\wikipedia\\links\\title-doc-occ\\enwiki-links.mat";
+        String lexpath = "E:\\work\\corpora\\wikipedia\\links\\title-doc-occ\\enwiki-link.lex";
+
+        try {
+            ImmutableTermDocMatrix mat = CooccurrenceMatrixFactory.createTermDocMatFromSave(lexpath, matpath);
+            IncrementalIndexedLexicon lex = mat.getLexicon();
+            int id = lex.putOrGet("this");
+            System.out.println(mat.getTermTotalCount(id));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

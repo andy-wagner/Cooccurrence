@@ -12,7 +12,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
-public abstract class TermDocumentMatrixProcessor<T> {
+public abstract class TermDocMatrixProcessor<T> {
 
     private AtomicInteger currentDocIndex;
 
@@ -23,9 +23,9 @@ public abstract class TermDocumentMatrixProcessor<T> {
     private ExecutorService exec;
 
     private Iterable<T> docs;
-    private final IncremantalIndexedLexicon term2id;
+    private final IncrementalIndexedLexicon term2id;
 
-    public TermDocumentMatrixProcessor(Iterable<T> docs, IncremantalIndexedLexicon term2id, int threads) {
+    public TermDocMatrixProcessor(Iterable<T> docs, IncrementalIndexedLexicon term2id, int threads) {
         this.rowidx = new TIntArrayList();
         this.colptr = new TIntArrayList();
         this.colptr.add(0);
@@ -44,7 +44,7 @@ public abstract class TermDocumentMatrixProcessor<T> {
         value.clear();
     }
 
-    public ImmutableTermDocumentMatrix make() {
+    public ImmutableTermDocMatrix make() {
         Lock lock = new ReentrantLock();
         Collection<Future<?>> futures = new LinkedList<>();
         for (T doc: docs) {
@@ -58,22 +58,17 @@ public abstract class TermDocumentMatrixProcessor<T> {
                 e.printStackTrace();
             }
         }
-//        try {
-//            exec.awaitTermination(5, TimeUnit.SECONDS);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
 
         // reduce column indices to column pointers
         for (int i = 1; i < colptr.size(); i++)
             colptr.set(i, colptr.get(i) + colptr.get(i - 1));
 
         colptr.toArray();
-        return new ImmutableTermDocumentMatrix(term2id.size(), currentDocIndex.get(),
+        return new ImmutableTermDocMatrix(term2id.size(), currentDocIndex.get(),
                 colptr.toArray(), rowidx.toArray(), value.toArray(), term2id);
     }
 
-    public IncremantalIndexedLexicon getLexicon() {
+    public IncrementalIndexedLexicon getLexicon() {
         return term2id;
     }
 
