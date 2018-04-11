@@ -11,31 +11,9 @@ import java.util.stream.Collectors;
 
 public class Test {
     public static void main(String[] args) {
-//        testLoadMat();
+        testLoadMat(args[0], args[1]);
+//        testScanDouble();
     }
-
-//    private static void testInsertSpeed() {
-//        long startTime = System.currentTimeMillis();
-//
-//        Random rand = new Random();
-//        ImmutableTermDocMatrix mat = new ImmutableTermDocMatrix(200000, 5000000);
-//
-//        long endTime = System.currentTimeMillis();
-//        double elapsed = (endTime - startTime) / 1000.0D;
-//        System.out.println("Initialization Time:\t" + String.format("%.5f", elapsed));
-//        startTime = System.currentTimeMillis();
-//
-//        for (int i = 0; i < 200000; i++) {
-//            int term = rand.nextInt(200000);
-//            int doc = rand.nextInt(5000000);
-//            int count = rand.nextInt(100);
-//            mat.addCount(term, doc, count);
-//        }
-//
-//        endTime = System.currentTimeMillis();
-//        elapsed = (endTime - startTime) / 1000.0D;
-//        System.out.println("Elasped Time:\t" + String.format("%.5f", elapsed));
-//    }
 
     private static void testListExpansion() {
         TDoubleArrayList list = new TDoubleArrayList();
@@ -70,19 +48,28 @@ public class Test {
         }
     }
 
-//    private static void testLoadMat() {
+    private static void testLoadMat(String matpath, String lexpath) {
 //        String matpath = "E:\\work\\corpora\\wikipedia\\links\\title-doc-occ\\enwiki-links.mat";
 //        String lexpath = "E:\\work\\corpora\\wikipedia\\links\\title-doc-occ\\enwiki-link.lex";
-//
-//        try {
-//            ImmutableTermDocMatrix mat = CooccurrenceMatrixFactory.createImmutableTermDocMatFromSave(lexpath, matpath);
-//            IncrementalIndexedLexicon lex = mat.getLexicon();
-//            int id = lex.putOrGet("this");
-//            System.out.println(mat.getTermTotalCount(id));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
+
+        try {
+            ImmutableTermDocMatrix mat = CooccurrenceMatrixFactory.createImmutableTermDocMatFromSave(lexpath, matpath);
+            IncrementalIndexedLexicon lex = mat.getLexicon();
+            int id = lex.putOrGet("Barack_Obama");
+            System.out.println("ID of obama:\t" + id);
+            System.out.println("Total Count Obama:\t" + mat.getTermTotalCount(id));
+            System.out.println("Item counts:\t" + mat.getNumTerm());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
+    private static void testScanDouble() {
+        String test = "1 2 3 4 5 6";
+        Scanner scan = new Scanner(test);
+        while (scan.hasNext()) {
+            System.out.print(scan.nextInt() + " ");
+        }
+    }
 }

@@ -13,8 +13,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 /**
- * This
- * @param <T>
+ * This 
+ * @param <T> Type of abstraction that represents the notion of "document"
  */
 public abstract class TermDocMatrixProcessor<T> {
 
