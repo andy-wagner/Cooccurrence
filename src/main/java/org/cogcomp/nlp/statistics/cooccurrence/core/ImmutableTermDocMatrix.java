@@ -33,7 +33,7 @@ public class ImmutableTermDocMatrix {
 
     final IncrementalIndexedLexicon lex;
 
-    protected ImmutableTermDocMatrix(int numTerm, int numDoc, int[] colptr, int[] rowidx, double[] val, IncrementalIndexedLexicon lex) {
+    ImmutableTermDocMatrix(int numTerm, int numDoc, int[] colptr, int[] rowidx, double[] val, IncrementalIndexedLexicon lex) {
         this.numDoc = numDoc;
         this.numTerm = numTerm;
         this.colptr = colptr;

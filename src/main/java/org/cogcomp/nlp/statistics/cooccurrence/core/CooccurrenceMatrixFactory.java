@@ -5,6 +5,7 @@ import edu.illinois.cs.cogcomp.core.io.LineIO;
 import java.io.*;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
 public class CooccurrenceMatrixFactory {
 
@@ -20,7 +21,7 @@ public class CooccurrenceMatrixFactory {
 //     *
 //     * @return An instance of {@link ImmutableTermDocMatrix}.
 //     */
-//    public static ImmutableTermDocMatrix createTermDocMatFromSave(String saveDir) throws IOException {
+//    public static ImmutableTermDocMatrix createImmutableTermDocMatFromSave(String saveDir) throws IOException {
 //        File dir = new File(saveDir);
 //
 //        if (!dir.isDirectory() || !dir.exists())
@@ -39,30 +40,33 @@ public class CooccurrenceMatrixFactory {
      * @throws IOException when fails to read save
      * @throws IllegalArgumentException when the save is not valid
      */
-    public static ImmutableTermDocMatrix createTermDocMatFromSave(String lexPath, String matPath) throws IOException, IllegalArgumentException{
-
-//        List<String> _matData =  LineIO.read(matPath); // TODO: Not mem efficient. reading line by line will save memory
-        BufferedReader br = new BufferedReader(new FileReader(matPath));
-
-//        if (_matData.size() < 3)
-//            throw new IllegalArgumentException("The matrix data save (\".mat\") is not valid! " + matPath); // TODO: shouldn't be IllegalArgumentException
-
-        String[] _colptr = br.readLine().split(" ");
-        int[] colptr = Arrays.stream(_colptr).mapToInt(Integer::parseInt).toArray();
-        _colptr = null;
-
-        String[] _rowidx = br.readLine().split(" ");
-        int[] rowidx = Arrays.stream(_rowidx).mapToInt(Integer::parseInt).toArray();
-        _rowidx = null;
-
-        String[] _val = br.readLine().split(" ");
-        double[] val = Arrays.stream(_val).mapToDouble(Double::parseDouble).toArray();
-        _val = null;
-
-        IncrementalIndexedLexicon lex = createIndexedLexiconFromSave(lexPath);
-
-        return new ImmutableTermDocMatrix(lex.size(), colptr.length - 1, colptr, rowidx, val, lex);
-    }
+//    public static ImmutableTermDocMatrix createImmutableTermDocMatFromSave(String lexPath, String matPath) throws IOException, IllegalArgumentException{
+//
+////        List<String> _matData =  LineIO.read(matPath); // TODO: Not mem efficient. reading line by line will save memory
+//        Scanner scan = new Scanner(new FileReader(matPath));
+//        scan.nextInt();
+//        BufferedReader br = new BufferedReader(new FileReader(matPath));
+//
+////        if (_matData.size() < 3)
+////            throw new IllegalArgumentException("The matrix data save (\".mat\") is not valid! " + matPath); // TODO: shouldn't be IllegalArgumentException
+//
+//        String _colptr = br.readLine();
+//        int[] colptr = Arrays.stream(_colptr).mapToInt(Integer::parseInt).toArray();
+//        _colptr = null;
+//        System.gc();
+//
+//        String[] _rowidx = br.readLine().split(" ");
+//        int[] rowidx = Arrays.stream(_rowidx).mapToInt(Integer::parseInt).toArray();
+//        _rowidx = null;
+//
+//        String[] _val = br.readLine().split(" ");
+//        double[] val = Arrays.stream(_val).mapToDouble(Double::parseDouble).toArray();
+//        _val = null;
+//
+//        IncrementalIndexedLexicon lex = createIndexedLexiconFromSave(lexPath);
+//
+//        return new ImmutableTermDocMatrix(lex.size(), colptr.length - 1, colptr, rowidx, val, lex);
+//    }
 
     /**
      * Load an instance of {@link org.cogcomp.nlp.statistics.cooccurrence.core.IncrementalIndexedLexicon} from previous save.

@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class Test {
     public static void main(String[] args) {
-        testLoadMat();
+//        testLoadMat();
     }
 
 //    private static void testInsertSpeed() {
@@ -70,19 +70,19 @@ public class Test {
         }
     }
 
-    private static void testLoadMat() {
-        String matpath = "E:\\work\\corpora\\wikipedia\\links\\title-doc-occ\\enwiki-links.mat";
-        String lexpath = "E:\\work\\corpora\\wikipedia\\links\\title-doc-occ\\enwiki-link.lex";
-
-        try {
-            ImmutableTermDocMatrix mat = CooccurrenceMatrixFactory.createTermDocMatFromSave(lexpath, matpath);
-            IncrementalIndexedLexicon lex = mat.getLexicon();
-            int id = lex.putOrGet("this");
-            System.out.println(mat.getTermTotalCount(id));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+//    private static void testLoadMat() {
+//        String matpath = "E:\\work\\corpora\\wikipedia\\links\\title-doc-occ\\enwiki-links.mat";
+//        String lexpath = "E:\\work\\corpora\\wikipedia\\links\\title-doc-occ\\enwiki-link.lex";
+//
+//        try {
+//            ImmutableTermDocMatrix mat = CooccurrenceMatrixFactory.createImmutableTermDocMatFromSave(lexpath, matpath);
+//            IncrementalIndexedLexicon lex = mat.getLexicon();
+//            int id = lex.putOrGet("this");
+//            System.out.println(mat.getTermTotalCount(id));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 
 }

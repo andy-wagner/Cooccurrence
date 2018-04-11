@@ -12,6 +12,10 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
+/**
+ * This
+ * @param <T>
+ */
 public abstract class TermDocMatrixProcessor<T> {
 
     private AtomicInteger currentDocIndex;

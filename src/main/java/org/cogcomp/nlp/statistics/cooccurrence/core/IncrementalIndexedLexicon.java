@@ -2,14 +2,15 @@ package org.cogcomp.nlp.statistics.cooccurrence.core;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.google.common.collect.Maps;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * A thread-safe indexed lexicon. Each time a new term is queried, the lexicon would memorize that term and assign an
- * index to it.
+ * index to it. The index is incremental. For example, if there are currently 8 terms in the lexicon and you add a new
+ * term to the lexicon, say "Blueberry Muffin", then the lexicon will assign index 8 to "Blueberry Muffin".
+ *
  *
  */
 public class IncrementalIndexedLexicon {
@@ -20,7 +21,7 @@ public class IncrementalIndexedLexicon {
         termIDMap = HashBiMap.create();
     }
 
-    public synchronized int putOrGet(String term) {
+    public int putOrGet(String term) {
         synchronized (termIDMap) {
             if (termIDMap.containsKey(term))
                 return termIDMap.get(term);
