@@ -1,18 +1,22 @@
 package org.cogcomp.nlp.statistics.cooccurrence;
 
+import edu.illinois.cs.cogcomp.thrift.base.Labeling;
+import edu.illinois.cs.cogcomp.thrift.curator.Record;
 import gnu.trove.list.array.TDoubleArrayList;
+import org.apache.commons.io.IOUtils;
 import org.cogcomp.nlp.statistics.cooccurrence.core.CooccurrenceMatrixFactory;
 import org.cogcomp.nlp.statistics.cooccurrence.core.ImmutableTermDocMatrix;
 import org.cogcomp.nlp.statistics.cooccurrence.core.IncrementalIndexedLexicon;
+import org.cogcomp.nlp.statistics.cooccurrence.wikipedia.ExtractWikiEntities;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class Test {
     public static void main(String[] args) {
-//        testLoadMat(args[0], args[1]);
-//        testExceptionCatching();
+        testCuratorRecord();
     }
 
     private static void testListExpansion() {
@@ -79,5 +83,22 @@ public class Test {
         s.add("Noise");
 
         System.out.println(s.toString());
+    }
+
+    private static void testCuratorRecord() {
+        String path = "data/record/wiki2014_1000";
+        Record rec = null;
+        try {
+            byte[] recBytes = IOUtils.toByteArray(new FileInputStream(path));
+            rec = ExtractWikiEntities.deserializeRecordFromBytes(recBytes);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+        Map<String, Labeling> views = rec.getLabelViews();
+        for (Map.Entry<String, Labeling> e: views.entrySet()) {
+            System.out.println(e);
+        }
     }
 }

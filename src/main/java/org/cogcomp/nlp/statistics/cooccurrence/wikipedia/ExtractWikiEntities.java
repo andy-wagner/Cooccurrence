@@ -1,13 +1,18 @@
 package org.cogcomp.nlp.statistics.cooccurrence.wikipedia;
 
+import edu.illinois.cs.cogcomp.core.datastructures.textannotation.TextAnnotation;
 import edu.illinois.cs.cogcomp.core.io.LineIO;
+import edu.illinois.cs.cogcomp.thrift.base.Labeling;
+import edu.illinois.cs.cogcomp.thrift.curator.Record;
+import org.apache.commons.io.IOUtils;
+import org.apache.thrift.TDeserializer;
+import org.apache.thrift.TException;
+import org.apache.thrift.protocol.TBinaryProtocol;
 import org.cogcomp.nlp.statistics.cooccurrence.util.Util;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 public class ExtractWikiEntities {
@@ -43,16 +48,37 @@ public class ExtractWikiEntities {
     class Processor implements Runnable {
 
         private String recPath;
-        private StringBuilder buffer;
+        private OutputStream out;
 
-        public Processor(String recPath, StringBuilder buffer) {
+        public Processor(String recPath, OutputStream out) {
             this.recPath = recPath;
-            this.buffer = buffer;
+            this.out = out;
         }
+
         @Override
         public void run() {
-            Seri
+            try {
+                byte[] recBytes = IOUtils.toByteArray(new FileInputStream(recPath));
+                Record rec = deserializeRecordFromBytes(recBytes);
+                Map<String, Labeling> views = rec.getLabelViews();
+                if (views.containsKey("wikifier")) {
+                    Labeling view = views.get("wikifier");
+                    view.getLabels();
+                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
+
+    public static Record deserializeRecordFromBytes(byte[] bytes) throws TException {
+        TDeserializer deserializer = new TDeserializer(
+                new TBinaryProtocol.Factory());
+        Record r = new Record();
+        deserializer.deserialize(r, bytes);
+        return r;
+    }
+
 
 }
