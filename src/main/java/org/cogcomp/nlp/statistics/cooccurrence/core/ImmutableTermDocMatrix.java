@@ -15,7 +15,8 @@ import java.util.Collections;
  * we can preserve n-gram counts per document, which is very important
  *
  * To optimize (parallel) import speed, I've made this matrix immutable.
- * Use @see org.cogcomp.nlp.statistics.cooccurrence.core.TermDocMatrixProcessor to generate the matrix.
+ * Use {@Link org.cogcomp.nlp.statistics.cooccurrence.core.TermDocMatrixProcessor TermDocMatrixProcessor}
+ * to generate the matrix.
  *
  * @author Sihao Chen
  */

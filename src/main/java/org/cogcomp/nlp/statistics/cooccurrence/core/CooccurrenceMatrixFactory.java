@@ -1,11 +1,8 @@
 package org.cogcomp.nlp.statistics.cooccurrence.core;
 
-import edu.illinois.cs.cogcomp.core.io.LineIO;
 import org.cogcomp.nlp.statistics.cooccurrence.util.Util;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
 
 public class CooccurrenceMatrixFactory {

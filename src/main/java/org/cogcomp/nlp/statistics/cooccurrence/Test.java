@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 
 public class Test {
     public static void main(String[] args) {
-        testLoadMat(args[0], args[1]);
-//        testScanDouble();
+//        testLoadMat(args[0], args[1]);
+//        testExceptionCatching();
     }
 
     private static void testListExpansion() {
@@ -71,5 +71,13 @@ public class Test {
         while (scan.hasNext()) {
             System.out.print(scan.nextInt() + " ");
         }
+    }
+
+    private static void testSetToString() {
+        HashSet<String> s = new HashSet<>();
+        s.add("Nice");
+        s.add("Noise");
+
+        System.out.println(s.toString());
     }
 }
