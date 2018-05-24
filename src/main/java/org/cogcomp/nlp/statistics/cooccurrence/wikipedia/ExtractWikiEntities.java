@@ -3,7 +3,10 @@ package org.cogcomp.nlp.statistics.cooccurrence.wikipedia;
 import edu.illinois.cs.cogcomp.core.io.LineIO;
 import org.cogcomp.nlp.statistics.cooccurrence.util.Util;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
@@ -48,7 +51,7 @@ public class ExtractWikiEntities {
         }
         @Override
         public void run() {
-
+            Seri
         }
     }
 

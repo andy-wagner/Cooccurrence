@@ -44,6 +44,17 @@
             <artifactId>illinois-tokenizer</artifactId>
             <version>4.0.3</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.thrift</groupId>
+            <artifactId>libthrift</artifactId>
+            <version>0.8.0</version>
+        </dependency>
+        <dependency>
+            <groupId>edu.illinois.cs.cogcomp</groupId>
+            <artifactId>illinois-curator</artifactId>
+            <version>4.0.3</version>
+        </dependency>
+
     </dependencies>
     <repositories>
         <repository>
@@ -52,4 +63,5 @@
             <url>http://cogcomp.org/m2repo/</url>
         </repository>
     </repositories>
+
 </project>
