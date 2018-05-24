@@ -3,6 +3,7 @@ package org.cogcomp.nlp.statistics.cooccurrence.wikipedia;
 import edu.illinois.cs.cogcomp.core.datastructures.textannotation.TextAnnotation;
 import edu.illinois.cs.cogcomp.core.io.LineIO;
 import edu.illinois.cs.cogcomp.thrift.base.Labeling;
+import edu.illinois.cs.cogcomp.thrift.base.Span;
 import edu.illinois.cs.cogcomp.thrift.curator.Record;
 import org.apache.commons.io.IOUtils;
 import org.apache.thrift.TDeserializer;
@@ -62,8 +63,14 @@ public class ExtractWikiEntities {
                 Record rec = deserializeRecordFromBytes(recBytes);
                 Map<String, Labeling> views = rec.getLabelViews();
                 if (views.containsKey("wikifier")) {
-                    Labeling view = views.get("wikifier");
-                    view.getLabels();
+                    List<Span> spans = views.get("wikifier").getLabels();
+                    spans.stream()
+                            .map(Span::getLabel)
+                            .map(s -> {
+                                String[] parts = s.split("/");
+                                return parts[parts.length - 1];
+                            })
+                            .mapToInt()
                 }
             }
             catch (Exception e) {
