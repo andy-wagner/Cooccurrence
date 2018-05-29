@@ -2,6 +2,7 @@ package org.cogcomp.nlp.statistics.cooccurrence.core;
 
 import edu.illinois.cs.cogcomp.core.io.IOUtils;
 import edu.illinois.cs.cogcomp.core.io.LineIO;
+import org.cogcomp.nlp.statistics.cooccurrence.lexicon.IncrementalIndexedLexicon;
 import org.la4j.Vector;
 import org.la4j.matrix.sparse.CCSMatrix;
 

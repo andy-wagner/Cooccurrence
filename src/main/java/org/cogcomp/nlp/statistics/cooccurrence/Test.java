@@ -6,7 +6,7 @@ import gnu.trove.list.array.TDoubleArrayList;
 import org.apache.commons.io.IOUtils;
 import org.cogcomp.nlp.statistics.cooccurrence.core.CooccurrenceMatrixFactory;
 import org.cogcomp.nlp.statistics.cooccurrence.core.ImmutableTermDocMatrix;
-import org.cogcomp.nlp.statistics.cooccurrence.core.IncrementalIndexedLexicon;
+import org.cogcomp.nlp.statistics.cooccurrence.lexicon.IncrementalIndexedLexicon;
 import org.cogcomp.nlp.statistics.cooccurrence.wikipedia.ExtractWikiEntities;
 
 import java.io.FileInputStream;

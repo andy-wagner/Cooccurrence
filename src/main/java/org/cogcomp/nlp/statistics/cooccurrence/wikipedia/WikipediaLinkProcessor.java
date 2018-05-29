@@ -3,7 +3,7 @@ package org.cogcomp.nlp.statistics.cooccurrence.wikipedia;
 import edu.illinois.cs.cogcomp.core.io.IOUtils;
 import edu.illinois.cs.cogcomp.core.io.LineIO;
 import org.cogcomp.nlp.statistics.cooccurrence.core.ImmutableTermDocMatrix;
-import org.cogcomp.nlp.statistics.cooccurrence.core.IncrementalIndexedLexicon;
+import org.cogcomp.nlp.statistics.cooccurrence.lexicon.IncrementalIndexedLexicon;
 import org.cogcomp.nlp.statistics.cooccurrence.core.TermDocMatrixProcessor;
 
 import java.io.IOException;

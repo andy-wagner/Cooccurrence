@@ -1,5 +1,6 @@
 package org.cogcomp.nlp.statistics.cooccurrence.core;
 
+import org.cogcomp.nlp.statistics.cooccurrence.lexicon.IncrementalIndexedLexicon;
 import org.cogcomp.nlp.statistics.cooccurrence.util.Util;
 
 import java.io.*;
@@ -73,10 +74,10 @@ public class CooccurrenceMatrixFactory {
     }
 
     /**
-     * Load an instance of {@link org.cogcomp.nlp.statistics.cooccurrence.core.IncrementalIndexedLexicon} from previous save.
+     * Load an instance of {@link IncrementalIndexedLexicon} from previous save.
      *
      * @param lexPath path to the saved lexicon
-     * @return An instance of {@link org.cogcomp.nlp.statistics.cooccurrence.core.IncrementalIndexedLexicon}
+     * @return An instance of {@link IncrementalIndexedLexicon}
      * @throws IOException when fails to read save
      * @throws IllegalArgumentException when the save is not valid
      */

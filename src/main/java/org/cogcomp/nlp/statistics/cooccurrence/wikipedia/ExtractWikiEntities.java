@@ -1,6 +1,5 @@
 package org.cogcomp.nlp.statistics.cooccurrence.wikipedia;
 
-import edu.illinois.cs.cogcomp.core.datastructures.textannotation.TextAnnotation;
 import edu.illinois.cs.cogcomp.core.io.LineIO;
 import edu.illinois.cs.cogcomp.thrift.base.Labeling;
 import edu.illinois.cs.cogcomp.thrift.base.Span;
@@ -15,11 +14,12 @@ import java.io.*;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
+import java.util.stream.Collectors;
 
 public class ExtractWikiEntities {
     public static void main(String[] args) {
         if (args.length != 3) {
-            System.out.println("Usage: java ExtractWikiEntities [list-of-path-to-records] [out-path] [num-threads]");
+            System.err.println("Usage: java ExtractWikiEntities [list-of-path-to-records] [out-path] [num-threads]");
             System.exit(1);
         }
 
@@ -32,26 +32,22 @@ public class ExtractWikiEntities {
         // Read path to Records from a file
         try {
             List<String> paths = LineIO.read(inList);
-
+            BufferedWriter bw = new BufferedWriter(new FileWriter(outPath));
             for (String path: paths) {
-                pool.execute(new Runnable() {
-                    @Override
-                    public void run() {
-
-                    }
-                });
+                pool.execute(new ExtractWikiEntities().new Processor(path, bw));
             }
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
+            System.exit(1);
         }
     }
 
-    class Processor implements Runnable {
+    private class Processor implements Runnable {
 
         private String recPath;
-        private OutputStream out;
+        private final BufferedWriter out;
 
-        public Processor(String recPath, OutputStream out) {
+        public Processor(String recPath, BufferedWriter out) {
             this.recPath = recPath;
             this.out = out;
         }
@@ -64,13 +60,18 @@ public class ExtractWikiEntities {
                 Map<String, Labeling> views = rec.getLabelViews();
                 if (views.containsKey("wikifier")) {
                     List<Span> spans = views.get("wikifier").getLabels();
-                    spans.stream()
+                    String line = spans.stream()
                             .map(Span::getLabel)
                             .map(s -> {
                                 String[] parts = s.split("/");
                                 return parts[parts.length - 1];
                             })
-                            .mapToInt()
+                            .collect(Collectors.joining(" "));
+
+                    synchronized (out) {
+                        out.write(line);
+                        out.newLine();
+                    }
                 }
             }
             catch (Exception e) {
