@@ -61,8 +61,8 @@ public class TermDocMatTest {
         String word = "this";
         int id = lex.putOrGet(word);
 
-        assertEquals(lex.size(), mat.getNumTerm());
-        assertEquals(mat.getTermTotalCount(id), 12);
+        assertEquals(lex.size(), mat.getNumTerm(), 0);
+        assertEquals(mat.getTermTotalCount(id), 12, 0);
 
         proc.close();
     }

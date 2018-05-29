@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * @param <T> Type of abstraction that represents the notion of "document"
  */
 public abstract class TermDocMatrixProcessor<T> {
-
+    
     private AtomicInteger currentDocIndex;
 
     private TIntList rowidx;

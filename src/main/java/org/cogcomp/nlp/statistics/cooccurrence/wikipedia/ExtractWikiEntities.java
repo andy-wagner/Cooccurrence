@@ -14,6 +14,7 @@ import java.io.*;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class ExtractWikiEntities {
@@ -28,7 +29,8 @@ public class ExtractWikiEntities {
         int threads = Integer.parseInt(args[2]);
 
         ExecutorService pool = Util.getBoundedThreadPool(threads);
-
+        AtomicInteger count = new AtomicInteger(0);
+        
         // Read path to Records from a file
         try {
             List<String> paths = LineIO.read(inList);
@@ -46,10 +48,12 @@ public class ExtractWikiEntities {
 
         private String recPath;
         private final BufferedWriter out;
+        private final AtomicInteger count;
 
-        public Processor(String recPath, BufferedWriter out) {
+        public Processor(String recPath, BufferedWriter out, AtomicInteger count) {
             this.recPath = recPath;
             this.out = out;
+            this.count = count;
         }
 
         @Override
@@ -71,6 +75,10 @@ public class ExtractWikiEntities {
                     synchronized (out) {
                         out.write(line);
                         out.newLine();
+                        int _count = count.incrementAndGet();
+                        if (_count % 100 == 0) {
+                            System.out.println("Processed:\t" + _count);
+                        }
                     }
                 }
             }
