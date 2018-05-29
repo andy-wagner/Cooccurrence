@@ -30,13 +30,13 @@ public class ExtractWikiEntities {
 
         ExecutorService pool = Util.getBoundedThreadPool(threads);
         AtomicInteger count = new AtomicInteger(0);
-        
+
         // Read path to Records from a file
         try {
             List<String> paths = LineIO.read(inList);
             BufferedWriter bw = new BufferedWriter(new FileWriter(outPath));
             for (String path: paths) {
-                pool.execute(new ExtractWikiEntities().new Processor(path, bw));
+                pool.execute(new ExtractWikiEntities().new Processor(path, bw, count));
             }
         } catch (Exception e) {
             e.printStackTrace();
