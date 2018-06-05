@@ -115,9 +115,6 @@ public abstract class TermDocMatrixProcessor<T> {
                 int termid = ent.getKey();
                 double count = ent.getValue().doubleValue();
 
-                if (termid == 0)
-                    System.out.println(count); // debug
-
                 _rowidx.add(termid);
                 _value.add(count);
             }
@@ -136,7 +133,7 @@ public abstract class TermDocMatrixProcessor<T> {
                 e.printStackTrace();
             }
             finally {
-                if (docid % 500 == 0)
+                if (docid % 500 == 0 && docid != 0)
                     System.out.println("Processed:\t" + docid);
                 lock.unlock();
             }
