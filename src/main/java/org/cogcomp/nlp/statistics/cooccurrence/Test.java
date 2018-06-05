@@ -7,16 +7,17 @@ import org.apache.commons.io.IOUtils;
 import org.cogcomp.nlp.statistics.cooccurrence.core.CooccurrenceMatrixFactory;
 import org.cogcomp.nlp.statistics.cooccurrence.core.ImmutableTermDocMatrix;
 import org.cogcomp.nlp.statistics.cooccurrence.lexicon.IncrementalIndexedLexicon;
+import org.cogcomp.nlp.statistics.cooccurrence.util.ProgressReporter;
 import org.cogcomp.nlp.statistics.cooccurrence.wikipedia.ExtractWikiEntities;
+import org.nustaq.serialization.FSTConfiguration;
 
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class Test {
     public static void main(String[] args) {
-        testCuratorRecord();
+        testDeserSpeed();
     }
 
     private static void testListExpansion() {
@@ -99,6 +100,47 @@ public class Test {
         Map<String, Labeling> views = rec.getLabelViews();
         for (Map.Entry<String, Labeling> e: views.entrySet()) {
             System.out.println(e);
+        }
+    }
+
+    private static void testSerializationSpeed() {
+        double[] arr = new double[100000000];
+        Random rand = new Random();
+        ProgressReporter job1 = new ProgressReporter("Populating Array");
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = rand.nextDouble();
+        }
+        job1.finish();
+
+        ProgressReporter job2 = new ProgressReporter("Serializing arr to byte[]");
+        String outPath = "out/test/";
+        FSTConfiguration config = FSTConfiguration.getDefaultConfiguration();
+        byte[] bytearr = config.asByteArray(arr);
+        job2.finish();
+
+        ProgressReporter job3 = new ProgressReporter("Saving arr to disk");
+        try {
+            BufferedOutputStream bw = new BufferedOutputStream(new FileOutputStream("out/test/test.txt"));
+            bw.write(bytearr);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        job3.finish();
+    }
+    private static void testDeserSpeed() {
+        try {
+            ProgressReporter job4 = new ProgressReporter("Load arr from disk");
+            FSTConfiguration config = FSTConfiguration.getDefaultConfiguration();
+            BufferedInputStream in = new BufferedInputStream(new FileInputStream("out/test/test.txt"));
+            byte[] byteArr = IOUtils.toByteArray(in);
+            job4.finish();
+
+            ProgressReporter job5 = new ProgressReporter("Deserialize arr");
+            double[] arr = (double[]) config.asObject(byteArr);
+            job5.finish();
+        }
+        catch (IOException e){
+            e.printStackTrace();
         }
     }
 }
