@@ -5,6 +5,7 @@ import edu.illinois.cs.cogcomp.core.io.LineIO;
 import org.cogcomp.nlp.statistics.cooccurrence.lexicon.IncrementalIndexedLexicon;
 import org.la4j.Vector;
 import org.la4j.matrix.sparse.CCSMatrix;
+import org.nustaq.serialization.FSTConfiguration;
 
 import java.io.*;
 import java.util.Collections;
@@ -35,6 +36,14 @@ public class ImmutableTermDocMatrix {
 
     final IncrementalIndexedLexicon lex;
 
+    private static final String LEX_EXT = ".lex";
+    private static final String COLPTR_EXT = ".colptr";
+    private static final String ROWIDX_EXT = ".rowidx";
+    private static final String VAL_EXT = ".val";
+    private static final String DOC_EXT = ".doc";
+
+    private static final FSTConfiguration serConfig = FSTConfiguration.getDefaultConfiguration();
+
     ImmutableTermDocMatrix(int numTerm, int numDoc, int[] colptr, int[] rowidx, double[] val, IncrementalIndexedLexicon lex) {
         this.numDoc = numDoc;
         this.numTerm = numTerm;
@@ -43,6 +52,29 @@ public class ImmutableTermDocMatrix {
         this.val = val;
         this.lex = lex;
         termDocMat = new CCSMatrix(numTerm, numDoc, val.length, val, rowidx, colptr);
+    }
+
+    ImmutableTermDocMatrix(String saveDir, String matName) throws IOException {
+        if (!IOUtils.exists(saveDir))
+            throw new IOException("Directory not exist! " + saveDir);
+
+        String prefix = saveDir + File.separator + matName;
+
+        FileInputStream colptrIn = new FileInputStream(prefix + COLPTR_EXT);
+        this.colptr = (int[]) serConfig.asObject(org.apache.commons.io.IOUtils.toByteArray(colptrIn));
+        colptrIn.close();
+
+        FileInputStream rowidxIn = new FileInputStream(prefix + ROWIDX_EXT);
+        this.rowidx = (int[]) serConfig.asObject(org.apache.commons.io.IOUtils.toByteArray(rowidxIn));
+        rowidxIn.close();
+
+        FileInputStream valIn = new FileInputStream(prefix + VAL_EXT);
+        this.val = (double[]) serConfig.asObject(org.apache.commons.io.IOUtils.toByteArray(valIn));
+        valIn.close();
+
+        this.lex = new IncrementalIndexedLexicon(prefix + LEX_EXT);
+
+        this.termDocMat = new CCSMatrix(); //TODO;
     }
 
     public double getTermTotalCount(int termID) {
@@ -75,62 +107,31 @@ public class ImmutableTermDocMatrix {
     }
 
     /**
-     * Save the matrix into two files.
+     * Save the matrix into five separate files, which will have the same file stem but different extensions.
      *
-     * 1. [$fileStem].lex will store the lexicon in linear order
-     * 2. [$fileStem].mat will store the actual data of the matrix. it will contain 3 lines
-     *      -- column pointers, row indices and values
+     * - .lex will store the lexicon in linear order
+     * - .colptr, .rowidx and .val will store the actual matrix data
+     * - .doc will store the document ids in linear order
      *
      * @param dir
-     * @param fileStem
+     * @param matName
      */
-    public void save(String dir, String fileStem) throws IOException {
+    public void save(String dir, String matName) throws IOException {
         IOUtils.mkdir(dir);
-        String prefix = dir + File.separator + fileStem;
-        FileOutputStream matOut = new FileOutputStream(prefix + ".mat");
-        saveMat(matOut);
-        matOut.close();
+        String prefix = dir + File.separator + matName;
 
-        LineIO.write(prefix + ".lex", Collections.singletonList(this.lex.toString()));
+        FileOutputStream colptrOut = new FileOutputStream(prefix + COLPTR_EXT);
+        colptrOut.write(serConfig.asByteArray(this.colptr));
+        colptrOut.close();
+
+        FileOutputStream rowdixOut = new FileOutputStream(prefix + ROWIDX_EXT);
+        rowdixOut.write(serConfig.asByteArray(this.rowidx));
+        rowdixOut.close();
+
+        FileOutputStream valOut = new FileOutputStream(prefix + VAL_EXT);
+        valOut.write(serConfig.asByteArray(this.val));
+        valOut.close();
+
+        LineIO.write(prefix + LEX_EXT, Collections.singletonList(this.lex.toString()));
     }
-
-    // TODO: make this prettier, I haven't think of a great solution yet -- it's hard to use Generics for primitives in Java
-    private void saveMat(OutputStream out) throws IOException {
-        StringBuilder str = new StringBuilder();
-
-        for (int cp : colptr) {
-            str.append(cp).append(' ');
-
-            if (str.length() > 200000) {
-                out.write(str.toString().getBytes());
-                str = new StringBuilder();
-            }
-        }
-
-        str.append('\n');
-
-        for (int ri : rowidx) {
-            str.append(ri).append(' ');
-
-            if (str.length() > 200000) {
-                out.write(str.toString().getBytes());
-                str = new StringBuilder();
-            }
-        }
-
-        str.append('\n');
-
-        for (double v : val) {
-            int _v = (int) v;
-            str.append(_v).append(' ');
-
-            if (str.length() > 200000) {
-                out.write(str.toString().getBytes());
-                str = new StringBuilder();
-            }
-        }
-
-        out.write(str.toString().getBytes());
-    }
-
 }

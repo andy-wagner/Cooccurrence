@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 public class Test {
     public static void main(String[] args) {
-        testDeserSpeed();
+        testLexiconSaveLoad();
     }
 
     private static void testListExpansion() {
@@ -69,23 +69,6 @@ public class Test {
         }
     }
 
-
-    private static void testScanDouble() {
-        String test = "1 2 3 4 5 6";
-        Scanner scan = new Scanner(test);
-        while (scan.hasNext()) {
-            System.out.print(scan.nextInt() + " ");
-        }
-    }
-
-    private static void testSetToString() {
-        HashSet<String> s = new HashSet<>();
-        s.add("Nice");
-        s.add("Noise");
-
-        System.out.println(s.toString());
-    }
-
     private static void testCuratorRecord() {
         String path = "data/record/wiki2014_1000";
         Record rec = null;
@@ -101,6 +84,33 @@ public class Test {
         for (Map.Entry<String, Labeling> e: views.entrySet()) {
             System.out.println(e);
         }
+    }
+
+    private static void testLexiconSaveLoad() {
+        String outPath = "out/test/test.lex";
+
+        ProgressReporter job1 = new ProgressReporter("Populating Lexicon");
+        IncrementalIndexedLexicon lex = new IncrementalIndexedLexicon();
+        for (int i = 0; i < 1000000; i++) {
+            lex.putOrGet(Integer.toString(i));
+        }
+        job1.finish();
+
+        ProgressReporter job2 = new ProgressReporter("Saving lexicon to disk");
+        try {
+            lex.save(outPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        job2.finish();
+
+        ProgressReporter job3 = new ProgressReporter("Loading lexicon from disk");
+        try {
+            lex = new IncrementalIndexedLexicon(outPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        job3.finish();
     }
 
     private static void testSerializationSpeed() {
