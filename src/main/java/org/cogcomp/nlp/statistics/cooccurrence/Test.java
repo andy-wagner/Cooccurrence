@@ -3,6 +3,7 @@ package org.cogcomp.nlp.statistics.cooccurrence;
 import edu.illinois.cs.cogcomp.thrift.base.Labeling;
 import edu.illinois.cs.cogcomp.thrift.curator.Record;
 import gnu.trove.list.array.TDoubleArrayList;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.cogcomp.nlp.statistics.cooccurrence.core.CoocMatrixFactory;
 import org.cogcomp.nlp.statistics.cooccurrence.core.ImmutableTermDocMatrix;
@@ -22,7 +23,7 @@ public class Test {
     private static Logger logger = LoggerFactory.getLogger(Test.class);
 
     public static void main(String[] args) {
-        testCuratorRecord();
+        testGetFileStem();
     }
 
     private static void testListExpansion() {
@@ -157,5 +158,10 @@ public class Test {
         catch (IOException e){
             e.printStackTrace();
         }
+    }
+
+    public static void testGetFileStem() {
+        String path = "out/test/vanilla-nyt.colptr";
+        System.out.println(FilenameUtils.getBaseName(path));
     }
 }

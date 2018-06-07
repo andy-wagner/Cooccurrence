@@ -5,6 +5,7 @@ import edu.illinois.cs.cogcomp.core.io.IOUtils;
 import edu.illinois.cs.cogcomp.core.io.LineIO;
 import edu.illinois.cs.cogcomp.nlp.tokenizer.StatefulTokenizer;
 import edu.illinois.cs.cogcomp.nlp.utility.TokenizerTextAnnotationBuilder;
+import org.apache.commons.io.FilenameUtils;
 import org.cogcomp.nlp.statistics.cooccurrence.core.CoocMatrixFactory;
 import org.cogcomp.nlp.statistics.cooccurrence.core.ImmutableTermDocMatrix;
 import org.cogcomp.nlp.statistics.cooccurrence.lexicon.IncrementalIndexedLexicon;
@@ -124,7 +125,7 @@ public class TermDocMatTest {
 
         @Override
         public String getDocumentId(String doc) {
-            return IOUtils.getFileStem(doc);
+            return FilenameUtils.getBaseName(doc);
         }
     }
 }
