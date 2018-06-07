@@ -4,6 +4,7 @@ import edu.illinois.cs.cogcomp.core.io.LineIO;
 import edu.illinois.cs.cogcomp.thrift.base.Labeling;
 import edu.illinois.cs.cogcomp.thrift.base.Span;
 import edu.illinois.cs.cogcomp.thrift.curator.Record;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.thrift.TDeserializer;
 import org.apache.thrift.TException;
@@ -64,7 +65,7 @@ public class ExtractWikiEntities {
                 Map<String, Labeling> views = rec.getLabelViews();
                 if (views.containsKey("wikifier")) {
                     List<Span> spans = views.get("wikifier").getLabels();
-                    String line = spans.stream()
+                    String links = spans.stream()
                             .map(Span::getLabel)
                             .map(s -> {
                                 String[] parts = s.split("/");
@@ -72,8 +73,13 @@ public class ExtractWikiEntities {
                             })
                             .collect(Collectors.joining(" "));
 
+                    StringBuilder line = new StringBuilder()
+                            .append(FilenameUtils.getBaseName(recPath))
+                            .append('\t')
+                            .append(links);
+
                     synchronized (out) {
-                        out.write(line);
+                        out.write(line.toString());
                         out.newLine();
                         int _count = count.incrementAndGet();
                         if (_count % 100 == 0) {

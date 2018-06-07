@@ -8,7 +8,6 @@ import org.cogcomp.nlp.statistics.cooccurrence.lexicon.IncrementalIndexedLexicon
 
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
@@ -20,8 +19,6 @@ import java.util.stream.Collectors;
  * @param <T> Type of abstraction that represents the notion of "document"
  */
 public abstract class TermDocMatrixProcessor<T> {
-
-    private AtomicInteger currentDocIndex;
 
     private TIntList rowidx;
     private TIntList colptr;
@@ -60,7 +57,6 @@ public abstract class TermDocMatrixProcessor<T> {
         this.colptr = new TIntArrayList();
         this.colptr.add(0);
         this.value = new TDoubleArrayList();
-        this.currentDocIndex = new AtomicInteger(0);
         this.exec = Executors.newFixedThreadPool(threads);
         this.term2id = term2id;
         this.docs = docs;
