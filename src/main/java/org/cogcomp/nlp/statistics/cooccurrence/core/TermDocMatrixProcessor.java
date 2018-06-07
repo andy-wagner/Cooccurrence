@@ -14,11 +14,13 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 /**
- * This 
+ * Process a Term-Document Cooccurrence Matrix from a list of "documents" in parallel fashion.
+ *
+ *
  * @param <T> Type of abstraction that represents the notion of "document"
  */
 public abstract class TermDocMatrixProcessor<T> {
-    
+
     private AtomicInteger currentDocIndex;
 
     private TIntList rowidx;
@@ -27,10 +29,33 @@ public abstract class TermDocMatrixProcessor<T> {
 
     private ExecutorService exec;
 
-    private Iterable<T> docs;
-    private final IncrementalIndexedLexicon term2id;
+    private List<T> docs;
 
-    public TermDocMatrixProcessor(Iterable<T> docs, IncrementalIndexedLexicon term2id, int threads) {
+    private final IncrementalIndexedLexicon term2id;
+    private final IncrementalIndexedLexicon doc2id;
+
+    /**
+     * Create an instance of TermDocumentProcessor with empty initial lexicon, and assign 4 CPU cores to the processor
+     * (or 1/2 total cores available if less than 4).
+     *
+     * @param docs List of "documents" to be processed
+     * @param docids List of document identifier to each of the document
+     */
+    public TermDocMatrixProcessor(List<T> docs, List<String> docids) throws IllegalArgumentException {
+        this(docs, new IncrementalIndexedLexicon(), 4);
+    }
+
+    /**
+     * Create an instance of TermDocumentProcessor, with initial lexicon
+     *
+     * @param docs List of "documents" to be processed
+     * @param term2id initial lexicon. OOV terms seen during the processing will be append to the lexicon.
+     * @param threads number of CPU cores (incl HT) you want to assign to this job
+     * @throws IllegalArgumentException
+     */
+    public TermDocMatrixProcessor(List<T> docs, IncrementalIndexedLexicon term2id, int threads)
+            throws IllegalArgumentException{
+
         this.rowidx = new TIntArrayList();
         this.colptr = new TIntArrayList();
         this.colptr.add(0);
@@ -39,20 +64,17 @@ public abstract class TermDocMatrixProcessor<T> {
         this.exec = Executors.newFixedThreadPool(threads);
         this.term2id = term2id;
         this.docs = docs;
+        this.doc2id = new IncrementalIndexedLexicon();
     }
 
-    public void reset() {
-        currentDocIndex.set(0);
-        colptr.clear();
-        rowidx.clear();
-        rowidx.add(0);
-        value.clear();
-    }
-
+    /**
+     * Call this function to start generating the cooc matrix
+     * @return a term-doc cooc matrix
+     */
     public ImmutableTermDocMatrix make() {
         Lock lock = new ReentrantLock();
         Collection<Future<?>> futures = new LinkedList<>();
-        for (T doc: docs) {
+        for (T doc : docs) {
             futures.add(exec.submit(new Worker(doc, lock)));
         }
 
@@ -69,8 +91,8 @@ public abstract class TermDocMatrixProcessor<T> {
             colptr.set(i, colptr.get(i) + colptr.get(i - 1));
 
         colptr.toArray();
-        return new ImmutableTermDocMatrix(term2id.size(), currentDocIndex.get(),
-                colptr.toArray(), rowidx.toArray(), value.toArray(), term2id);
+        return new ImmutableTermDocMatrix(
+                colptr.toArray(), rowidx.toArray(), value.toArray(), term2id, doc2id);
     }
 
     public IncrementalIndexedLexicon getLexicon() {
@@ -78,6 +100,8 @@ public abstract class TermDocMatrixProcessor<T> {
     }
 
     public abstract List<String> extractTerms(T doc);
+
+    public abstract String getDocumentId(T doc);
 
     public void close() {
         this.exec.shutdown();
@@ -122,19 +146,24 @@ public abstract class TermDocMatrixProcessor<T> {
 
             // lock here
             lock.lock();
-            int docid = -1;
+            int _docidx = -1;
             try {
-                docid = currentDocIndex.getAndIncrement();
-                rowidx.addAll(_rowidx);
-                colptr.add(sorted.size());
-                value.addAll(_value);
+                String docid = getDocumentId(doc);
+                if (doc2id.containsTerm(docid))
+                    throw new IllegalArgumentException("Duplicate document ID found: " + docid);
+                else {
+                    _docidx = doc2id.putOrGet(getDocumentId(doc));
+                    rowidx.addAll(_rowidx);
+                    colptr.add(sorted.size());
+                    value.addAll(_value);
+                }
             }
             catch (Exception e) {
                 e.printStackTrace();
             }
             finally {
-                if (docid % 500 == 0 && docid != 0)
-                    System.out.println("Processed:\t" + docid);
+                if (_docidx % 500 == 0 && _docidx != 0)
+                    System.out.println("Processed:\t" + _docidx);
                 lock.unlock();
             }
         }

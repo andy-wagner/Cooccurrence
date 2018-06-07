@@ -13,6 +13,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -20,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 public class TermDocMatTest {
 
     private static final String demoDocsDir = "src/test/resources/vanilla-NYT/";
+    private static final String demoDoc = "src/test/resources/vanilla-NYT/1121146.txt";
     private static final int numThreads = 4;
 
     @Test
@@ -52,6 +54,11 @@ public class TermDocMatTest {
                 String[] tokens = ta.getTokens();
                 return Arrays.asList(tokens);
             }
+
+            @Override
+            public String getDocumentId(String doc) {
+                return IOUtils.getFileStem(doc);
+            }
         };
 
         ImmutableTermDocMatrix mat = proc.make();
@@ -63,6 +70,47 @@ public class TermDocMatTest {
 
         assertEquals(lex.size(), mat.getNumTerm(), 0);
         assertEquals(mat.getTermTotalCount(id), 12, 0);
+
+        proc.close();
+    }
+
+    @Test
+    public void testDuplicateFile() {
+        List<String> docs = Collections.nCopies(4, demoDoc);
+
+        TermDocMatrixProcessor<String> proc = new TermDocMatrixProcessor<String>(docs,
+                new IncrementalIndexedLexicon(), numThreads) {
+            @Override
+            public List<String> extractTerms(String doc) {
+
+                String text;
+                try {
+                    text = LineIO.slurp(doc);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    return new ArrayList<>();
+                }
+
+                TextAnnotationBuilder tab = new TokenizerTextAnnotationBuilder(new StatefulTokenizer());
+                TextAnnotation ta = tab.createTextAnnotation(text);
+
+                String[] tokens = ta.getTokens();
+                return Arrays.asList(tokens);
+            }
+
+            @Override
+            public String getDocumentId(String doc) {
+                return IOUtils.getFileStem(doc);
+            }
+        };
+
+        ImmutableTermDocMatrix mat = proc.make();
+        IncrementalIndexedLexicon lex = proc.getLexicon();
+
+        String word = "Stalin";
+        int id = lex.putOrGet(word);
+
+        assertEquals(mat.getTermTotalCount(id), 2, 0);
 
         proc.close();
     }

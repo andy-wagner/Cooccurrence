@@ -13,8 +13,6 @@ import java.util.Collections;
 /**
  * Using a sparse matrix in Compressed Column Storage (CCS) format to store counts for each document
  * This is leveraging the fact that term-document matrices are usually very sparse, even compared to term-term matrices.
- * With just a little extra space complexity cost (Maybe not, depending on sparsity)
- * we can preserve n-gram counts per document, which is very important
  *
  * To optimize (parallel) import speed, I've made this matrix immutable.
  * Use {@Link org.cogcomp.nlp.statistics.cooccurrence.core.TermDocMatrixProcessor TermDocMatrixProcessor}
@@ -27,14 +25,13 @@ public class ImmutableTermDocMatrix {
 
     private final CCSMatrix termDocMat;
 
-    private int numTerm;
-    private int numDoc;
-
-    int[] colptr;
-    int[] rowidx;
-    double[] val;
+    // TODO: Can't remember why I did this, but is there a reason why these are not private?
+    final int[] colptr;
+    final int[] rowidx;
+    final double[] val;
 
     final IncrementalIndexedLexicon lex;
+    final IncrementalIndexedLexicon docid;
 
     private static final String LEX_EXT = ".lex";
     private static final String COLPTR_EXT = ".colptr";
@@ -44,14 +41,14 @@ public class ImmutableTermDocMatrix {
 
     private static final FSTConfiguration serConfig = FSTConfiguration.getDefaultConfiguration();
 
-    ImmutableTermDocMatrix(int numTerm, int numDoc, int[] colptr, int[] rowidx, double[] val, IncrementalIndexedLexicon lex) {
-        this.numDoc = numDoc;
-        this.numTerm = numTerm;
+    ImmutableTermDocMatrix(int[] colptr, int[] rowidx, double[] val,
+                           IncrementalIndexedLexicon lex, IncrementalIndexedLexicon docid) {
         this.colptr = colptr;
         this.rowidx = rowidx;
         this.val = val;
         this.lex = lex;
-        termDocMat = new CCSMatrix(numTerm, numDoc, val.length, val, rowidx, colptr);
+        this.docid = docid;
+        termDocMat = new CCSMatrix(lex.size(), docid.size(), val.length, val, rowidx, colptr);
     }
 
     ImmutableTermDocMatrix(String saveDir, String matName) throws IOException {
@@ -73,8 +70,9 @@ public class ImmutableTermDocMatrix {
         valIn.close();
 
         this.lex = new IncrementalIndexedLexicon(prefix + LEX_EXT);
+        this.docid = new IncrementalIndexedLexicon(prefix + DOC_EXT);
 
-        this.termDocMat = new CCSMatrix(); //TODO;
+        this.termDocMat = new CCSMatrix(lex.size(), docid.size(), val.length, val, rowidx, colptr);
     }
 
     public double getTermTotalCount(int termID) {
@@ -86,11 +84,11 @@ public class ImmutableTermDocMatrix {
     }
 
     public int getNumTerm() {
-        return numTerm;
+        return lex.size();
     }
 
     public int getNumDoc() {
-        return numDoc;
+        return docid.size();
     }
 
     public Vector getDocwiseTermCount(int termID) {

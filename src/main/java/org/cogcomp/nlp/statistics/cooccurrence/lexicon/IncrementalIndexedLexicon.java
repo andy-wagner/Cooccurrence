@@ -42,11 +42,8 @@ public class IncrementalIndexedLexicon {
         }
     }
 
-    public void readFromList(List<String> terms) {
-        synchronized (lexicon) {
-            lexicon.clear();
-            terms.forEach(this::putOrGet);
-        }
+    public boolean containsTerm(String term) {
+        return lexicon.containsKey(term);
     }
 
     private String getTermFromId(int id) {
@@ -54,9 +51,7 @@ public class IncrementalIndexedLexicon {
     }
 
     public int size() {
-        synchronized (lexicon) {
-            return lexicon.size();
-        }
+        return lexicon.size();
     }
 
     /**
@@ -65,10 +60,8 @@ public class IncrementalIndexedLexicon {
      */
     public List<String> getAllWords() {
         List<String> lex = new ArrayList<>();
-        synchronized (lexicon) {
-            for (int i = 0; i < lexicon.size(); i++) {
-                lex.add(this.getTermFromId(i));
-            }
+        for (int i = 0; i < lexicon.size(); i++) {
+            lex.add(this.getTermFromId(i));
         }
         return lex;
     }

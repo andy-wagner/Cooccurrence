@@ -14,11 +14,12 @@ public class CoocUtil {
      * Bounds the number concurrent executing thread to 1/2 of the cores
      * available to the JVM. If more jobs are submitted than the allowed
      * upperbound, the caller thread will be executing the job.
+     *
      * @return a fixed thread pool with bounded job numbers
      */
     public static ThreadPoolExecutor getBoundedThreadPool(int poolSize) {
         poolSize = Math.max(1, poolSize - 1);
-        poolSize = Math.min(poolSize, Runtime.getRuntime().availableProcessors()/ 2);
+        poolSize = Math.min(poolSize, Runtime.getRuntime().availableProcessors() / 2);
         ThreadPoolExecutor executor = new ThreadPoolExecutor(
                 poolSize, // Core count
                 poolSize, // Pool Max
@@ -47,6 +48,4 @@ public class CoocUtil {
 
         return list.toArray();
     }
-
-
 }
