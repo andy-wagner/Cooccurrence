@@ -8,7 +8,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.thrift.TDeserializer;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TBinaryProtocol;
-import org.cogcomp.nlp.statistics.cooccurrence.util.Util;
+import org.cogcomp.nlp.statistics.cooccurrence.util.CoocUtil;
 
 import java.io.*;
 import java.util.List;
@@ -28,7 +28,7 @@ public class ExtractWikiEntities {
         String outPath = args[1];
         int threads = Integer.parseInt(args[2]);
 
-        ExecutorService pool = Util.getBoundedThreadPool(threads);
+        ExecutorService pool = CoocUtil.getBoundedThreadPool(threads);
         AtomicInteger count = new AtomicInteger(0);
 
         // Read path to Records from a file

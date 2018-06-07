@@ -1,7 +1,7 @@
 package org.cogcomp.nlp.statistics.cooccurrence.core;
 
 import org.cogcomp.nlp.statistics.cooccurrence.lexicon.IncrementalIndexedLexicon;
-import org.cogcomp.nlp.statistics.cooccurrence.util.Util;
+import org.cogcomp.nlp.statistics.cooccurrence.util.CoocUtil;
 
 import java.io.*;
 import java.util.Scanner;
@@ -48,21 +48,21 @@ public class CooccurrenceMatrixFactory {
 
         System.out.print("\tLoading column pointers...");
         String _colptr = br.readLine();
-        int[] colptr = Util.parseIntArray(_colptr);
+        int[] colptr = CoocUtil.parseIntArray(_colptr);
         _colptr = null;
         System.gc();
         System.out.println("Done!");
 
         System.out.print("\tLoading row indices...");
         String _rowidx = br.readLine();
-        int[] rowidx = Util.parseIntArray(_rowidx);
+        int[] rowidx = CoocUtil.parseIntArray(_rowidx);
         _rowidx = null;
         System.gc();
         System.out.println("Done!");
 
         System.out.print("\tLoading entry values...");
         String _val = br.readLine();
-        double[] val = Util.parseDoubleArray(_val);
+        double[] val = CoocUtil.parseDoubleArray(_val);
         _val = null;
         System.gc();
         System.out.println("Done!");

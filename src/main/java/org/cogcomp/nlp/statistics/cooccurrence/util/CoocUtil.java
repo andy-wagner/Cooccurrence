@@ -8,7 +8,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-public class Util {
+public class CoocUtil {
 
     /**
      * Bounds the number concurrent executing thread to 1/2 of the cores
