@@ -23,7 +23,7 @@ public class Test {
     private static Logger logger = LoggerFactory.getLogger(Test.class);
 
     public static void main(String[] args) {
-        testGetFileStem();
+        testCuratorRecord();
     }
 
     private static void testListExpansion() {

@@ -67,6 +67,7 @@ public class ExtractWikiEntities {
                     List<Span> spans = views.get("wikifier").getLabels();
                     String links = spans.stream()
                             .map(Span::getLabel)
+                            .filter(lbl -> !lbl.equals("UNMAPPED"))
                             .map(s -> {
                                 String[] parts = s.split("/");
                                 return parts[parts.length - 1];
