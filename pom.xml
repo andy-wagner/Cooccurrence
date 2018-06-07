@@ -54,7 +54,12 @@
             <artifactId>illinois-curator</artifactId>
             <version>4.0.3</version>
         </dependency>
-
+        <!-- Wasn't sure which slf4j version to include -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.21</version>
+        </dependency>
     </dependencies>
     <repositories>
         <repository>
