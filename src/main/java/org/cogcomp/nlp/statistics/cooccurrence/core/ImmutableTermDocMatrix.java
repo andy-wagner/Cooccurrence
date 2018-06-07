@@ -130,6 +130,7 @@ public class ImmutableTermDocMatrix {
         valOut.write(serConfig.asByteArray(this.val));
         valOut.close();
 
-        LineIO.write(prefix + LEX_EXT, Collections.singletonList(this.lex.toString()));
+        lex.save(prefix + LEX_EXT);
+        docid.save(prefix + DOC_EXT);
     }
 }

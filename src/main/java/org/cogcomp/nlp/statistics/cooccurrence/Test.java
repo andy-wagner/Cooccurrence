@@ -4,7 +4,7 @@ import edu.illinois.cs.cogcomp.thrift.base.Labeling;
 import edu.illinois.cs.cogcomp.thrift.curator.Record;
 import gnu.trove.list.array.TDoubleArrayList;
 import org.apache.commons.io.IOUtils;
-import org.cogcomp.nlp.statistics.cooccurrence.core.CooccurrenceMatrixFactory;
+import org.cogcomp.nlp.statistics.cooccurrence.core.CoocMatrixFactory;
 import org.cogcomp.nlp.statistics.cooccurrence.core.ImmutableTermDocMatrix;
 import org.cogcomp.nlp.statistics.cooccurrence.lexicon.IncrementalIndexedLexicon;
 import org.cogcomp.nlp.statistics.cooccurrence.util.ProgressReporter;
@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class Test {
@@ -23,7 +22,7 @@ public class Test {
     private static Logger logger = LoggerFactory.getLogger(Test.class);
 
     public static void main(String[] args) {
-        testLexiconSaveLoad();
+        testCuratorRecord();
     }
 
     private static void testListExpansion() {
@@ -64,7 +63,7 @@ public class Test {
 //        String lexpath = "E:\\work\\corpora\\wikipedia\\links\\title-doc-occ\\enwiki-link.lex";
 
         try {
-            ImmutableTermDocMatrix mat = CooccurrenceMatrixFactory.createImmutableTermDocMatFromSave(lexpath, matpath);
+            ImmutableTermDocMatrix mat = CoocMatrixFactory.createImmutableTermDocMatFromSave(lexpath, matpath);
             IncrementalIndexedLexicon lex = mat.getLexicon();
             int id = lex.putOrGet("Barack_Obama");
             System.out.println("ID of obama:\t" + id);

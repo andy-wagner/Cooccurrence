@@ -4,7 +4,7 @@ import org.cogcomp.nlp.statistics.cooccurrence.lexicon.IncrementalIndexedLexicon
 
 import java.io.*;
 
-public class CooccurrenceMatrixFactory {
+public class CoocMatrixFactory {
 
     /**
      * Load an instance of {@link org.cogcomp.nlp.statistics.cooccurrence.core.ImmutableTermDocMatrix} from previous save.
@@ -13,10 +13,9 @@ public class CooccurrenceMatrixFactory {
      * @param matPath path to the saved matrix data
      * @return An instance of {@link ImmutableTermDocMatrix}.
      * @throws IOException when fails to read save
-     * @throws IllegalArgumentException when the save is not valid
      */
-    public static ImmutableTermDocMatrix createImmutableTermDocMatFromSave(String lexPath, String matPath) throws IOException, IllegalArgumentException{
-        return null;
+    public static ImmutableTermDocMatrix createImmutableTermDocMatFromSave(String lexPath, String matPath) throws IOException {
+        return new ImmutableTermDocMatrix(lexPath, matPath);
     }
 
     /**
