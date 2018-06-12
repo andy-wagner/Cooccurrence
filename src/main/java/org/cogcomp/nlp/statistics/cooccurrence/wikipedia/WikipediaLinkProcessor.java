@@ -1,10 +1,10 @@
 package org.cogcomp.nlp.statistics.cooccurrence.wikipedia;
 
 import edu.illinois.cs.cogcomp.core.io.IOUtils;
-import edu.illinois.cs.cogcomp.core.io.LineIO;
 import org.cogcomp.nlp.statistics.cooccurrence.core.ImmutableTermDocMatrix;
-import org.cogcomp.nlp.statistics.cooccurrence.lexicon.IncrementalIndexedLexicon;
 import org.cogcomp.nlp.statistics.cooccurrence.core.TermDocMatrixProcessor;
+import org.cogcomp.nlp.statistics.cooccurrence.lexicon.IncrementalIndexedLexicon;
+import org.cogcomp.nlp.statistics.cooccurrence.util.IterableLineReader;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,10 +26,10 @@ public class WikipediaLinkProcessor {
 
         IOUtils.mkdir(outdir);
 
-        List<String> pages = null;
+        Iterable<String> pages = null;
         System.out.print("Reading Links...");
         try {
-            pages = LineIO.read(linksdir);
+            pages = new IterableLineReader(linksdir);
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
@@ -52,8 +52,7 @@ public class WikipediaLinkProcessor {
                 String[] parts = doc.split("\t");
                 if (parts.length == 2) {
                     return parts[0].split("_")[1];
-                }
-                else
+                } else
                     return null;
             }
         };

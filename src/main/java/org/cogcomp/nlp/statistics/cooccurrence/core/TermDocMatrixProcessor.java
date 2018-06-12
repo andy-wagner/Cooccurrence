@@ -26,7 +26,7 @@ public abstract class TermDocMatrixProcessor<T> {
 
     private ExecutorService exec;
 
-    private List<T> docs;
+    private Iterable<T> docs;
 
     private final IncrementalIndexedLexicon term2id;
     private final IncrementalIndexedLexicon doc2id;
@@ -36,9 +36,8 @@ public abstract class TermDocMatrixProcessor<T> {
      * (or 1/2 total cores available if less than 4).
      *
      * @param docs List of "documents" to be processed
-     * @param docids List of document identifier to each of the document
      */
-    public TermDocMatrixProcessor(List<T> docs, List<String> docids) throws IllegalArgumentException {
+    public TermDocMatrixProcessor(Iterable<T> docs) throws IllegalArgumentException {
         this(docs, new IncrementalIndexedLexicon(), 4);
     }
 
@@ -50,7 +49,7 @@ public abstract class TermDocMatrixProcessor<T> {
      * @param threads number of CPU cores (incl HT) you want to assign to this job
      * @throws IllegalArgumentException
      */
-    public TermDocMatrixProcessor(List<T> docs, IncrementalIndexedLexicon term2id, int threads) {
+    public TermDocMatrixProcessor(Iterable<T> docs, IncrementalIndexedLexicon term2id, int threads) {
         this.rowidx = new TIntArrayList();
         this.colptr = new TIntArrayList();
         this.colptr.add(0);
