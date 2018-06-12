@@ -50,9 +50,7 @@ public abstract class TermDocMatrixProcessor<T> {
      * @param threads number of CPU cores (incl HT) you want to assign to this job
      * @throws IllegalArgumentException
      */
-    public TermDocMatrixProcessor(List<T> docs, IncrementalIndexedLexicon term2id, int threads)
-            throws IllegalArgumentException{
-
+    public TermDocMatrixProcessor(List<T> docs, IncrementalIndexedLexicon term2id, int threads) {
         this.rowidx = new TIntArrayList();
         this.colptr = new TIntArrayList();
         this.colptr.add(0);
@@ -145,7 +143,9 @@ public abstract class TermDocMatrixProcessor<T> {
             int _docidx = -1;
             try {
                 String docid = getDocumentId(doc);
-                if (doc2id.containsTerm(docid))
+                if (docid == null)
+                    return;
+                else if (doc2id.containsTerm(docid))
                     throw new IllegalArgumentException("Duplicate document ID found: " + docid);
                 else {
                     _docidx = doc2id.putOrGet(getDocumentId(doc));
