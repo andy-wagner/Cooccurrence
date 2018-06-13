@@ -1,20 +1,16 @@
 package org.cogcomp.nlp.statistics.cooccurrence.core;
 
 import edu.illinois.cs.cogcomp.core.io.IOUtils;
-import edu.illinois.cs.cogcomp.core.io.LineIO;
 import org.cogcomp.nlp.statistics.cooccurrence.lexicon.IncrementalIndexedLexicon;
-import org.la4j.Vector;
 import org.la4j.matrix.sparse.CCSMatrix;
 import org.nustaq.serialization.FSTConfiguration;
 
 import java.io.*;
-import java.util.Collections;
 
 /**
- * Using a sparse matrix in Compressed Column Storage (CCS) format to store counts for each document
+ * This class uses a sparse matrix in Compressed Column Storage (CCS) format to store term counts for each document
  * This is leveraging the fact that term-document matrices are usually very sparse, even compared to term-term matrices.
  *
- * To optimize (parallel) import speed, I've made this matrix immutable.
  * Use {@Link org.cogcomp.nlp.statistics.cooccurrence.core.TermDocMatrixProcessor TermDocMatrixProcessor}
  * to generate the matrix.
  *
@@ -33,6 +29,9 @@ public class ImmutableTermDocMatrix {
     final IncrementalIndexedLexicon lex;
     final IncrementalIndexedLexicon docid;
 
+    private int lexSize;
+    private int docCount;
+
     private static final String LEX_EXT = ".lex";
     private static final String COLPTR_EXT = ".colptr";
     private static final String ROWIDX_EXT = ".rowidx";
@@ -48,6 +47,8 @@ public class ImmutableTermDocMatrix {
         this.val = val;
         this.lex = lex;
         this.docid = docid;
+        this.lexSize = lex.size();
+        this.docCount = docid.size();
         termDocMat = new CCSMatrix(lex.size(), docid.size(), val.length, val, rowidx, colptr);
     }
 
@@ -71,28 +72,38 @@ public class ImmutableTermDocMatrix {
 
         this.lex = new IncrementalIndexedLexicon(prefix + LEX_EXT);
         this.docid = new IncrementalIndexedLexicon(prefix + DOC_EXT);
+        this.lexSize = lex.size();
+        this.docCount = docid.size();
 
         this.termDocMat = new CCSMatrix(lex.size(), docid.size(), val.length, val, rowidx, colptr);
     }
 
-    public double getTermTotalCount(int termID) {
+    public int getTermTotalCount(String term) {
+        return (int) getTermTotalCount(lex.putOrGet(term));
+    }
+
+    private double getTermTotalCount(int termID) {
         return termDocMat.getRow(termID).sum();
     }
 
-    public double getCoocurrenceCount(int term1, int term2) {
-        return termDocMat.getRow(term1).innerProduct(termDocMat.getRow(term2));
+    public int getCoocurrenceCount(String term1, String term2) {
+        return (int) getCoocurrenceCount(lex.putOrGet(term1), lex.putOrGet(term2));
+    }
+
+    private double getCoocurrenceCount(int term1, int term2) {
+         return termDocMat.getRow(term1).innerProduct(termDocMat.getRow(term2));
     }
 
     public int getNumTerm() {
-        return lex.size();
+        return lexSize;
     }
 
     public int getNumDoc() {
-        return docid.size();
+        return docCount;
     }
 
-    public Vector getDocwiseTermCount(int termID) {
-        return termDocMat.getRow(termID);
+    private double getDocwiseTermCount(int termId, int docId) {
+        return termDocMat.get(termId, docId);
     }
 
     public IncrementalIndexedLexicon getLexicon() {
@@ -111,8 +122,8 @@ public class ImmutableTermDocMatrix {
      * - .colptr, .rowidx and .val will store the actual matrix data
      * - .doc will store the document ids in linear order
      *
-     * @param dir
-     * @param matName
+     * @param dir path of directory to save the matrix
+     * @param matName name of the save.
      */
     public void save(String dir, String matName) throws IOException {
         IOUtils.mkdir(dir);

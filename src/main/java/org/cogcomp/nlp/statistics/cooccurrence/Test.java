@@ -8,7 +8,7 @@ import org.apache.commons.io.IOUtils;
 import org.cogcomp.nlp.statistics.cooccurrence.core.CoocMatrixFactory;
 import org.cogcomp.nlp.statistics.cooccurrence.core.ImmutableTermDocMatrix;
 import org.cogcomp.nlp.statistics.cooccurrence.lexicon.IncrementalIndexedLexicon;
-import org.cogcomp.nlp.statistics.cooccurrence.util.ProgressReporter;
+import org.cogcomp.nlp.statistics.cooccurrence.util.StopWatch;
 import org.cogcomp.nlp.statistics.cooccurrence.wikipedia.ExtractWikiEntities;
 import org.nustaq.serialization.FSTConfiguration;
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ public class Test {
     private static Logger logger = LoggerFactory.getLogger(Test.class);
 
     public static void main(String[] args) {
-        testCuratorRecord();
+        testTDMat();
     }
 
     private static void testListExpansion() {
@@ -59,21 +59,6 @@ public class Test {
         }
     }
 
-    private static void testLoadMat(String matpath, String lexpath) {
-//        String matpath = "E:\\work\\corpora\\wikipedia\\links\\title-doc-occ\\enwiki-links.mat";
-//        String lexpath = "E:\\work\\corpora\\wikipedia\\links\\title-doc-occ\\enwiki-link.lex";
-
-        try {
-            ImmutableTermDocMatrix mat = CoocMatrixFactory.createImmutableTermDocMatFromSave(lexpath, matpath);
-            IncrementalIndexedLexicon lex = mat.getLexicon();
-            int id = lex.putOrGet("Barack_Obama");
-            System.out.println("ID of obama:\t" + id);
-            System.out.println("Total Count Obama:\t" + mat.getTermTotalCount(id));
-            System.out.println("Item counts:\t" + mat.getNumTerm());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     private static void testCuratorRecord() {
         String path = "data/record/wiki2014_1000";
@@ -95,14 +80,14 @@ public class Test {
     private static void testLexiconSaveLoad() {
         String outPath = "out/test/test.lex";
 
-        ProgressReporter job1 = new ProgressReporter("Populating Lexicon", logger);
+        StopWatch job1 = new StopWatch("Populating Lexicon", logger);
         IncrementalIndexedLexicon lex = new IncrementalIndexedLexicon();
         for (int i = 0; i < 1000000; i++) {
             lex.putOrGet(Integer.toString(i));
         }
         job1.finish();
 
-        ProgressReporter job2 = new ProgressReporter("Saving lexicon to disk", logger);
+        StopWatch job2 = new StopWatch("Saving lexicon to disk", logger);
         try {
             lex.save(outPath);
         } catch (IOException e) {
@@ -110,7 +95,7 @@ public class Test {
         }
         job2.finish();
 
-        ProgressReporter job3 = new ProgressReporter("Loading lexicon from disk", logger);
+        StopWatch job3 = new StopWatch("Loading lexicon from disk", logger);
         try {
             lex = new IncrementalIndexedLexicon(outPath);
         } catch (IOException e) {
@@ -122,19 +107,19 @@ public class Test {
     private static void testSerializationSpeed() {
         double[] arr = new double[100000000];
         Random rand = new Random();
-        ProgressReporter job1 = new ProgressReporter("Populating Array", logger);
+        StopWatch job1 = new StopWatch("Populating Array", logger);
         for (int i = 0; i < arr.length; i++) {
             arr[i] = rand.nextDouble();
         }
         job1.finish();
 
-        ProgressReporter job2 = new ProgressReporter("Serializing arr to byte[]", logger);
+        StopWatch job2 = new StopWatch("Serializing arr to byte[]", logger);
         String outPath = "out/test/";
         FSTConfiguration config = FSTConfiguration.getDefaultConfiguration();
         byte[] bytearr = config.asByteArray(arr);
         job2.finish();
 
-        ProgressReporter job3 = new ProgressReporter("Saving arr to disk", logger);
+        StopWatch job3 = new StopWatch("Saving arr to disk", logger);
         try {
             BufferedOutputStream bw = new BufferedOutputStream(new FileOutputStream("out/test/test.txt"));
             bw.write(bytearr);
@@ -145,13 +130,13 @@ public class Test {
     }
     private static void testDeserSpeed() {
         try {
-            ProgressReporter job4 = new ProgressReporter("Load arr from disk", logger);
+            StopWatch job4 = new StopWatch("Load arr from disk", logger);
             FSTConfiguration config = FSTConfiguration.getDefaultConfiguration();
             BufferedInputStream in = new BufferedInputStream(new FileInputStream("out/test/test.txt"));
             byte[] byteArr = IOUtils.toByteArray(in);
             job4.finish();
 
-            ProgressReporter job5 = new ProgressReporter("Deserialize arr", logger);
+            StopWatch job5 = new StopWatch("Deserialize arr", logger);
             double[] arr = (double[]) config.asObject(byteArr);
             job5.finish();
         }
@@ -163,5 +148,27 @@ public class Test {
     public static void testGetFileStem() {
         String path = "out/test/vanilla-nyt.colptr";
         System.out.println(FilenameUtils.getBaseName(path));
+    }
+
+    public static void testTDMat() {
+        String path = "E:\\wsl-space\\resources\\wikified-wiki";
+        String name = "wikified-entities";
+
+        StopWatch job1 = new StopWatch("Reading matrix", logger);
+        ImmutableTermDocMatrix mat = null;
+        try {
+            mat = CoocMatrixFactory.createTermDocMatFromSave(path, name);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        job1.finish();
+
+        System.out.println(mat.getLexicon().containsTerm("Hillary_Clinton"));
+
+        StopWatch job3 = new StopWatch("Reading matrix", logger);
+        double count = mat.getCoocurrenceCount("Barack_Obama", "Chicago");
+        logger.info("Cooc Count:\t{}", count);
+        job3.finish();
     }
 }

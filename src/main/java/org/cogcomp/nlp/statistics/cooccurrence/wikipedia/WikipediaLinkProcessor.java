@@ -60,18 +60,12 @@ public class WikipediaLinkProcessor {
         ImmutableTermDocMatrix mat = proc.make();
         IncrementalIndexedLexicon lex = proc.getLexicon();
 
-        // Get the id of "said" in lexicon
-        String word = "this";
-        int id = lex.putOrGet(word);
-
-        // Try to save result!
         try {
             mat.save(outdir, savename);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-//        System.out.println(mat.toString());
         proc.close();
     }
 }

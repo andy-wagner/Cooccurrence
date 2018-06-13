@@ -47,11 +47,10 @@ public class TermDocMatTest {
 
         // Get the id of "said" in lexicon
         String word = "this";
-        int id = lex.putOrGet(word);
 
-        assertEquals(lex.size(), mat.getNumTerm(), 0);
-        assertEquals(mat.getTermTotalCount(id), 12, 0);
-
+        assertEquals(lex.size(), mat.getNumTerm());
+        assertEquals(mat.getTermTotalCount(word), 12);
+        assertEquals(mat.getTermTotalCount("Gibberish"), 0);
         proc.close();
     }
 
@@ -65,9 +64,8 @@ public class TermDocMatTest {
         IncrementalIndexedLexicon lex = proc.getLexicon();
 
         String word = "Stalin";
-        int id = lex.putOrGet(word);
 
-        assertEquals(mat.getTermTotalCount(id), 2, 0);
+        assertEquals(mat.getTermTotalCount(word), 2, 0);
 
         proc.close();
     }
@@ -85,11 +83,10 @@ public class TermDocMatTest {
             File dir = Files.createTempDir();
             mat.save(dir.getPath(), "vanilla-nyt");
 
-            ImmutableTermDocMatrix newMat = CoocMatrixFactory.createImmutableTermDocMatFromSave(dir.getPath(), "vanilla-nyt");
-            IncrementalIndexedLexicon lex = newMat.getLexicon();
+            ImmutableTermDocMatrix newMat = CoocMatrixFactory.createTermDocMatFromSave(dir.getPath(), "vanilla-nyt");
 
-            assertEquals(newMat.getTermTotalCount(lex.putOrGet("this")),
-                    mat.getTermTotalCount(lex.putOrGet("this")), 0);
+            assertEquals(newMat.getTermTotalCount("this"),
+                    mat.getTermTotalCount("this"));
 
             assertEquals(newMat.getNumTerm(), mat.getNumTerm());
             assertEquals(newMat.getNumDoc(), mat.getNumDoc());

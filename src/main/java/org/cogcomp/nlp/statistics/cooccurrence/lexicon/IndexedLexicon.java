@@ -1,5 +1,6 @@
 package org.cogcomp.nlp.statistics.cooccurrence.lexicon;
 
+import com.google.common.annotations.Beta;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
@@ -7,7 +8,7 @@ import com.google.common.collect.HashBiMap;
  * A synchronized lexicon that stores bidirectional mapping between words and indices
  *  TODO: Design more sophisticated sync patterns
  */
-
+@Beta
 public class IndexedLexicon {
 
     protected final BiMap<String, Integer> lexicon;

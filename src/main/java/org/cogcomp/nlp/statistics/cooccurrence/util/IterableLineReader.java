@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.Iterator;
 
 /**
- * Come in handy when you have a huge text file. You want to iterate through lines
+ * Come in handy when you have a huge text file and you want to iterate through lines without loading them all in memory.
  */
 public class IterableLineReader implements Iterable<String> {
 
