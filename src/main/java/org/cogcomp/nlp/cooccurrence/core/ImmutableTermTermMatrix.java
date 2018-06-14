@@ -11,7 +11,7 @@ import java.util.List;
  * TODO: WIP. Haven't decided what to do with this
  */
 @Beta
-public class ImmutableCoocMatrix {
+public class ImmutableTermTermMatrix {
 
     final Matrix coocMat;
 
@@ -21,7 +21,7 @@ public class ImmutableCoocMatrix {
      * Instantiate CoocMatrix from term-document matrix
      * @param tdmat
      */
-    ImmutableCoocMatrix(ImmutableTermDocMatrix tdmat) {
+    ImmutableTermTermMatrix(ImmutableTermDocMatrix tdmat) {
         this.lex = tdmat.getLexicon();
         this.coocMat = tdmat.tdMat.multiplyByItsTranspose();
         System.out.println(coocMat.getClass().getCanonicalName());

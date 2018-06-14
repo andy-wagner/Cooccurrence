@@ -10,13 +10,13 @@ import java.io.*;
 public class CoocMatrixFactory {
 
     /**
-     * Create an instance of {@Link ImmutableCoocMatrix} from Term-Document
+     * Create an instance of {@Link ImmutableTermTermMatrix} from Term-Document
      * Matrix. The result term cooc matrix is just T-D matrix times its transpose.
      * @param tdmat Term-Document Matrix
      * @return the corresponding Term-Term cooc matrix
      */
-    public static ImmutableCoocMatrix createCoocMatrixFromTermDocMatrix(ImmutableTermDocMatrix tdmat) {
-        return new ImmutableCoocMatrix(tdmat);
+    public static ImmutableTermTermMatrix createCoocMatrixFromTermDocMatrix(ImmutableTermDocMatrix tdmat) {
+        return new ImmutableTermTermMatrix(tdmat);
     }
     /**
      * Load an instance of {@link ImmutableTermDocMatrix} from previous save.
