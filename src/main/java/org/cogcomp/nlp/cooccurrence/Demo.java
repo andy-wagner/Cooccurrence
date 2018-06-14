@@ -27,10 +27,14 @@ public class Demo {
         // I used string form of curid to reference everything here
         String obama = "534366";        //curid for Barack_Obama
         String hillary = "5043192";     //curid for Hillary_Clinton
+
         System.out.print("# of times Barack_Obama appears on Hillary_Clinton's page:\t");
-        System.out.println(tdmat.getTermCountInDoc(obama, hillary));
+        int count1 = tdmat.getTermCountInDoc(obama, hillary);
+        System.out.println(count1);
+
         System.out.print("# of times Hillary_Clinton appears on Barack_Obama's page:\t");
-        System.out.println(tdmat.getTermCountInDoc(hillary, obama));
+        int count2 = tdmat.getTermCountInDoc(hillary, obama);
+        System.out.println(count2);
 
         // Retrieve counts for how many times two links appears together in the entire Wikipedia
         // Note that, if on some page, obama appears 3 times and hillary appears 4 times,
@@ -38,11 +42,13 @@ public class Demo {
         //
         // Let's use obama and hillary as example again
         System.out.print("# of times Barack_Obama and Hillary_Clinton co-occur on the same page:\t");
-        System.out.println(tdmat.getCoocCount(obama, hillary));
+        int coocCount = tdmat.getCoocCount(obama, hillary);
+        System.out.println(coocCount);
 
         // Get the count of a link over the entire Wikipedia
         System.out.print("# of times Barack_Obama appears in the entire Wikipedia:\t");
-        System.out.println(tdmat.getTermTotalCount(obama));
+        int totalCount = tdmat.getTermTotalCount(obama);
+        System.out.println(totalCount);
 
         // Given a link, get the ranked list of links that co-occured with the given link with term-term matrix
         // TODO: still need to work on this, because computing term-term matrix is much more costly than computing T-D matrix
