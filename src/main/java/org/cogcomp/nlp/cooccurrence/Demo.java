@@ -20,7 +20,8 @@ public class Demo {
         // Load the saved counts from the above location into a Term-Document matrix
         // In this case, "Term"s are Wikified links that appear on each Wikipedia page ("Document")
         //
-        // Note:    Loading the matrix takes ~20 seconds overhead.
+        // Note:    Loading the matrix takes ~100 seconds overhead on cogcomp server
+        //          On my own laptop it takes about 10 seconds.
         //          Memory usage around 2 or 3GB
 
         StopWatch timer = new StopWatch("Loading Matrix from save", logger);
@@ -53,7 +54,7 @@ public class Demo {
 
         // Get the count of a link over the entire Wikipedia
         int totalCount = tdmat.getTermTotalCount(obama);
-        logger.info("# of times Barack_Obama appears in the entire Wikipedia:\t{]", totalCount);
+        logger.info("# of times Barack_Obama appears in the entire Wikipedia:\t{}", totalCount);
 
         // Given a link, get the ranked list of links that co-occured with the given link with term-term matrix
         // TODO: still need to work on this, because computing term-term matrix is much more costly than computing T-D matrix
