@@ -19,15 +19,14 @@ import java.io.*;
 
 public class ImmutableTermDocMatrix {
 
-    private final CCSMatrix termDocMat;
+    final CCSMatrix tdMat;
 
-    // TODO: Can't remember why I did this, but is there a reason why these are not private?
-    final int[] colptr;
-    final int[] rowidx;
-    final double[] val;
+    private final int[] colptr;
+    private final int[] rowidx;
+    private final double[] val;
 
-    final IncrementalIndexedLexicon lex;
-    final IncrementalIndexedLexicon docid;
+    private final IncrementalIndexedLexicon lex;
+    private final IncrementalIndexedLexicon docid;
 
     private int lexSize;
     private int docCount;
@@ -49,7 +48,7 @@ public class ImmutableTermDocMatrix {
         this.docid = docid;
         this.lexSize = lex.size();
         this.docCount = docid.size();
-        termDocMat = new CCSMatrix(lex.size(), docid.size(), val.length, val, rowidx, colptr);
+        tdMat = new CCSMatrix(lex.size(), docid.size(), val.length, val, rowidx, colptr);
     }
 
     ImmutableTermDocMatrix(String saveDir, String matName) throws IOException {
@@ -75,23 +74,48 @@ public class ImmutableTermDocMatrix {
         this.lexSize = lex.size();
         this.docCount = docid.size();
 
-        this.termDocMat = new CCSMatrix(lex.size(), docid.size(), val.length, val, rowidx, colptr);
+        this.tdMat = new CCSMatrix(lex.size(), docid.size(), val.length, val, rowidx, colptr);
     }
 
+    /**
+     * Get total occurrence counts of a term across all documents
+     * @param term
+     * @return total occurrence counts of the term across all documents
+     */
     public int getTermTotalCount(String term) {
-        return (int) getTermTotalCount(lex.putOrGet(term));
+        return (int) _getTermTotalCount(lex.putOrGet(term));
     }
 
-    private double getTermTotalCount(int termID) {
-        return termDocMat.getRow(termID).sum();
+    private double _getTermTotalCount(int termID) {
+        return tdMat.getRow(termID).sum();
     }
 
-    public int getCoocurrenceCount(String term1, String term2) {
-        return (int) getCoocurrenceCount(lex.putOrGet(term1), lex.putOrGet(term2));
+    /**
+     * Get co-occurrence counts of two terms across all documents
+     * @param term1
+     * @param term2
+     * @return co-occurrence counts of term1 and term2
+     */
+    public int getCoocCount(String term1, String term2) {
+        return (int) _getCoocCount(lex.putOrGet(term1), lex.putOrGet(term2));
     }
 
-    private double getCoocurrenceCount(int term1, int term2) {
-         return termDocMat.getRow(term1).innerProduct(termDocMat.getRow(term2));
+    private double _getCoocCount(int term1, int term2) {
+        return tdMat.getRow(term1).innerProduct(tdMat.getRow(term2));
+    }
+
+    /**
+     * Get count of a term in a given document
+     * @param term
+     * @param doc
+     * @return count of term in doc
+     */
+    public int getTermCountInDoc(String term, String doc) {
+        return (int)_getDocwiseTermCount(lex.putOrGet(term), docid.putOrGet(doc));
+    }
+
+    private double _getDocwiseTermCount(int termId, int docId) {
+        return tdMat.get(termId, docId);
     }
 
     public int getNumTerm() {
@@ -102,17 +126,13 @@ public class ImmutableTermDocMatrix {
         return docCount;
     }
 
-    private double getDocwiseTermCount(int termId, int docId) {
-        return termDocMat.get(termId, docId);
-    }
-
     public IncrementalIndexedLexicon getLexicon() {
         return this.lex;
     }
 
     @Override
     public String toString() {
-        return this.termDocMat.toString();
+        return this.tdMat.toString();
     }
 
     /**

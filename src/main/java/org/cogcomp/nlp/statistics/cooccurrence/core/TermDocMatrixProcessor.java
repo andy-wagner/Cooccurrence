@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 /**
  * Process a Term-Document Cooccurrence Matrix from a list of "documents" in parallel fashion.
- *
+ * Leverage the fact that in Compressed Column Storage (CCS) format sparse matrix, you can
  *
  * @param <T> Type of abstraction that represents the notion of "document"
  */

@@ -6,6 +6,7 @@ import gnu.trove.list.array.TDoubleArrayList;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.cogcomp.nlp.statistics.cooccurrence.core.CoocMatrixFactory;
+import org.cogcomp.nlp.statistics.cooccurrence.core.ImmutableCoocMatrix;
 import org.cogcomp.nlp.statistics.cooccurrence.core.ImmutableTermDocMatrix;
 import org.cogcomp.nlp.statistics.cooccurrence.lexicon.IncrementalIndexedLexicon;
 import org.cogcomp.nlp.statistics.cooccurrence.util.StopWatch;
@@ -23,7 +24,7 @@ public class Test {
     private static Logger logger = LoggerFactory.getLogger(Test.class);
 
     public static void main(String[] args) {
-        testTDMat();
+        testTDMatIteration();
     }
 
     private static void testListExpansion() {
@@ -151,8 +152,8 @@ public class Test {
     }
 
     public static void testTDMat() {
-        String path = "E:\\wsl-space\\resources\\wikified-wiki";
-        String name = "wikified-entities";
+        String path = "E:\\wsl-space\\resources\\ww-curid-tdmat";
+        String name = "ww-curid";
 
         StopWatch job1 = new StopWatch("Reading matrix", logger);
         ImmutableTermDocMatrix mat = null;
@@ -164,11 +165,39 @@ public class Test {
         }
         job1.finish();
 
-        System.out.println(mat.getLexicon().containsTerm("Hillary_Clinton"));
+        StopWatch job2 = new StopWatch("Getting count", logger);
+        double count = mat.getTermTotalCount("1000");
+        logger.info("Term Count:\t{}", count);
+        job2.finish();
 
-        StopWatch job3 = new StopWatch("Reading matrix", logger);
-        double count = mat.getCoocurrenceCount("Barack_Obama", "Chicago");
+        StopWatch job3 = new StopWatch("Getting cooc count of two terms", logger);
+        count = mat.getCoocCount("1000", "14749939");
         logger.info("Cooc Count:\t{}", count);
         job3.finish();
+
+    }
+
+    public static void testTDMatIteration() {
+        String path = "E:\\wsl-space\\resources\\ww-curid-tdmat";
+        String name = "ww-curid";
+
+        StopWatch job1 = new StopWatch("Reading matrix", logger);
+        ImmutableTermDocMatrix mat = null;
+        try {
+            mat = CoocMatrixFactory.createTermDocMatFromSave(path, name);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        job1.finish();
+
+        List<String> words = mat.getLexicon().getAllWords();
+        logger.info("Lexicon Size:\t" + words.size());
+        StopWatch job2 = new StopWatch("iterating thru 100 elements", logger);
+        List<String> someWords = words.subList(0, 100);
+        for (String word: someWords) {
+            int sum = mat.getTermTotalCount(word);
+        }
+        job2.finish();
     }
 }

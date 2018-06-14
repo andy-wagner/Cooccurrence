@@ -4,8 +4,20 @@ import org.cogcomp.nlp.statistics.cooccurrence.lexicon.IncrementalIndexedLexicon
 
 import java.io.*;
 
+/**
+ * TODO: I plan on providing abstraction for TermDocMatrix and CoocMatrix, this is why this class exists
+ */
 public class CoocMatrixFactory {
 
+    /**
+     * Create an instance of {@Link org.cogcomp.nlp.statistics.cooccurrence.core.ImmutableCoocMatrix} from Term-Document
+     * Matrix. The result term cooc matrix is just T-D matrix times its transpose.
+     * @param tdmat Term-Document Matrix
+     * @return the corresponding Term-Term cooc matrix
+     */
+    public static ImmutableCoocMatrix createCoocMatrixFromTermDocMatrix(ImmutableTermDocMatrix tdmat) {
+        return new ImmutableCoocMatrix(tdmat);
+    }
     /**
      * Load an instance of {@link org.cogcomp.nlp.statistics.cooccurrence.core.ImmutableTermDocMatrix} from previous save.
      *

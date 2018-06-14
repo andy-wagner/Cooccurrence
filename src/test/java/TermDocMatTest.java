@@ -7,6 +7,7 @@ import edu.illinois.cs.cogcomp.nlp.tokenizer.StatefulTokenizer;
 import edu.illinois.cs.cogcomp.nlp.utility.TokenizerTextAnnotationBuilder;
 import org.apache.commons.io.FilenameUtils;
 import org.cogcomp.nlp.statistics.cooccurrence.core.CoocMatrixFactory;
+import org.cogcomp.nlp.statistics.cooccurrence.core.ImmutableCoocMatrix;
 import org.cogcomp.nlp.statistics.cooccurrence.core.ImmutableTermDocMatrix;
 import org.cogcomp.nlp.statistics.cooccurrence.lexicon.IncrementalIndexedLexicon;
 import org.cogcomp.nlp.statistics.cooccurrence.core.TermDocMatrixProcessor;
@@ -52,6 +53,9 @@ public class TermDocMatTest {
         assertEquals(mat.getTermTotalCount(word), 12);
         assertEquals(mat.getTermTotalCount("Gibberish"), 0);
         proc.close();
+
+        ImmutableCoocMatrix cooc = CoocMatrixFactory.createCoocMatrixFromTermDocMatrix(mat);
+        System.out.println(cooc.getClass().getCanonicalName());
     }
 
     @Test
