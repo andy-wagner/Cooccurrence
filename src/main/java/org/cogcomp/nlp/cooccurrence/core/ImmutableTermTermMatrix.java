@@ -1,7 +1,6 @@
 package org.cogcomp.nlp.cooccurrence.core;
 
 import com.google.common.annotations.Beta;
-import javafx.util.Pair;
 import org.cogcomp.nlp.cooccurrence.lexicon.IncrementalIndexedLexicon;
 import org.la4j.Matrix;
 
@@ -33,15 +32,5 @@ public class ImmutableTermTermMatrix {
 
     private double _getCoocCount(int term1, int term2) {
         return coocMat.get(term1, term2);
-    }
-
-    /**
-     * Get the list of terms that co-occurred with the given term. The list will be sorted by their co-occurrence conuts
-     * @param term
-     * @return A sorted list of (term, cooc count) pairs (in descending order by cooc counts)
-     */
-    public List<Pair<String, Integer>> getCoocTerms(String term) {
-        coocMat.getRow(lex.putOrGet(term));
-        return null;
     }
 }
