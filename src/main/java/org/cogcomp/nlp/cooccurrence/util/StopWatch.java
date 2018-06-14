@@ -1,4 +1,4 @@
-package org.cogcomp.nlp.statistics.cooccurrence.util;
+package org.cogcomp.nlp.cooccurrence.util;
 
 import org.slf4j.Logger;
 

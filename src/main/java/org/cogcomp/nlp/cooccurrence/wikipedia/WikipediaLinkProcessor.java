@@ -1,10 +1,10 @@
-package org.cogcomp.nlp.statistics.cooccurrence.wikipedia;
+package org.cogcomp.nlp.cooccurrence.wikipedia;
 
 import edu.illinois.cs.cogcomp.core.io.IOUtils;
-import org.cogcomp.nlp.statistics.cooccurrence.core.ImmutableTermDocMatrix;
-import org.cogcomp.nlp.statistics.cooccurrence.core.TermDocMatrixProcessor;
-import org.cogcomp.nlp.statistics.cooccurrence.lexicon.IncrementalIndexedLexicon;
-import org.cogcomp.nlp.statistics.cooccurrence.util.IterableLineReader;
+import org.cogcomp.nlp.cooccurrence.core.ImmutableTermDocMatrix;
+import org.cogcomp.nlp.cooccurrence.core.TermDocMatrixProcessor;
+import org.cogcomp.nlp.cooccurrence.lexicon.IncrementalIndexedLexicon;
+import org.cogcomp.nlp.cooccurrence.util.IterableLineReader;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package org.cogcomp.nlp.statistics.cooccurrence.util;
+package org.cogcomp.nlp.cooccurrence.util;
 
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;

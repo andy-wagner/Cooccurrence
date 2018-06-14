@@ -1,8 +1,8 @@
-package org.cogcomp.nlp.statistics.cooccurrence.core;
+package org.cogcomp.nlp.cooccurrence.core;
 
 import com.google.common.annotations.Beta;
 import javafx.util.Pair;
-import org.cogcomp.nlp.statistics.cooccurrence.lexicon.IncrementalIndexedLexicon;
+import org.cogcomp.nlp.cooccurrence.lexicon.IncrementalIndexedLexicon;
 import org.la4j.Matrix;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package org.cogcomp.nlp.statistics.cooccurrence.lexicon;
+package org.cogcomp.nlp.cooccurrence.lexicon;
 
 import com.google.common.annotations.Beta;
 import com.google.common.collect.BiMap;

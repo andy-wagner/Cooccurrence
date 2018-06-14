@@ -1,7 +1,7 @@
-package org.cogcomp.nlp.statistics.cooccurrence.core;
+package org.cogcomp.nlp.cooccurrence.core;
 
 import edu.illinois.cs.cogcomp.core.io.IOUtils;
-import org.cogcomp.nlp.statistics.cooccurrence.lexicon.IncrementalIndexedLexicon;
+import org.cogcomp.nlp.cooccurrence.lexicon.IncrementalIndexedLexicon;
 import org.la4j.matrix.sparse.CCSMatrix;
 import org.nustaq.serialization.FSTConfiguration;
 
@@ -11,7 +11,7 @@ import java.io.*;
  * This class uses a sparse matrix in Compressed Column Storage (CCS) format to store term counts for each document
  * This is leveraging the fact that term-document matrices are usually very sparse, even compared to term-term matrices.
  *
- * Use {@Link org.cogcomp.nlp.statistics.cooccurrence.core.TermDocMatrixProcessor TermDocMatrixProcessor}
+ * Use {@Link TermDocMatrixProcessor TermDocMatrixProcessor}
  * to generate the matrix.
  *
  * @author Sihao Chen

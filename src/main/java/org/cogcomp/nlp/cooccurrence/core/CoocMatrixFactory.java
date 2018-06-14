@@ -1,6 +1,6 @@
-package org.cogcomp.nlp.statistics.cooccurrence.core;
+package org.cogcomp.nlp.cooccurrence.core;
 
-import org.cogcomp.nlp.statistics.cooccurrence.lexicon.IncrementalIndexedLexicon;
+import org.cogcomp.nlp.cooccurrence.lexicon.IncrementalIndexedLexicon;
 
 import java.io.*;
 
@@ -10,7 +10,7 @@ import java.io.*;
 public class CoocMatrixFactory {
 
     /**
-     * Create an instance of {@Link org.cogcomp.nlp.statistics.cooccurrence.core.ImmutableCoocMatrix} from Term-Document
+     * Create an instance of {@Link ImmutableCoocMatrix} from Term-Document
      * Matrix. The result term cooc matrix is just T-D matrix times its transpose.
      * @param tdmat Term-Document Matrix
      * @return the corresponding Term-Term cooc matrix
@@ -19,7 +19,7 @@ public class CoocMatrixFactory {
         return new ImmutableCoocMatrix(tdmat);
     }
     /**
-     * Load an instance of {@link org.cogcomp.nlp.statistics.cooccurrence.core.ImmutableTermDocMatrix} from previous save.
+     * Load an instance of {@link ImmutableTermDocMatrix} from previous save.
      *
      * @param dirpath directory that contains the saved matrix data
      * @param name name of the matrix

@@ -6,11 +6,11 @@ import edu.illinois.cs.cogcomp.core.io.LineIO;
 import edu.illinois.cs.cogcomp.nlp.tokenizer.StatefulTokenizer;
 import edu.illinois.cs.cogcomp.nlp.utility.TokenizerTextAnnotationBuilder;
 import org.apache.commons.io.FilenameUtils;
-import org.cogcomp.nlp.statistics.cooccurrence.core.CoocMatrixFactory;
-import org.cogcomp.nlp.statistics.cooccurrence.core.ImmutableCoocMatrix;
-import org.cogcomp.nlp.statistics.cooccurrence.core.ImmutableTermDocMatrix;
-import org.cogcomp.nlp.statistics.cooccurrence.lexicon.IncrementalIndexedLexicon;
-import org.cogcomp.nlp.statistics.cooccurrence.core.TermDocMatrixProcessor;
+import org.cogcomp.nlp.cooccurrence.core.CoocMatrixFactory;
+import org.cogcomp.nlp.cooccurrence.core.ImmutableCoocMatrix;
+import org.cogcomp.nlp.cooccurrence.core.ImmutableTermDocMatrix;
+import org.cogcomp.nlp.cooccurrence.lexicon.IncrementalIndexedLexicon;
+import org.cogcomp.nlp.cooccurrence.core.TermDocMatrixProcessor;
 import org.junit.Test;
 
 import java.io.File;

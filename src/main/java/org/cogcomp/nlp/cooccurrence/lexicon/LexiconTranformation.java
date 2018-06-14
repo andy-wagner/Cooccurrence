@@ -1,7 +1,7 @@
-package org.cogcomp.nlp.statistics.cooccurrence.lexicon;
+package org.cogcomp.nlp.cooccurrence.lexicon;
 
 /**
- * Maps entries of {@Link org.cogcomp.nlp.statistics.cooccurrence.lexicon.IncrementalIndexedLexicon
+ * Maps entries of {@Link IncrementalIndexedLexicon
  * IncrementalIndexedLexicon} to new value according to some mapping function
  */
 public abstract class LexiconTranformation {

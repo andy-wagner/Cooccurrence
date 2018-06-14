@@ -1,4 +1,4 @@
-import org.cogcomp.nlp.statistics.cooccurrence.lexicon.IncrementalIndexedLexicon;
+import org.cogcomp.nlp.cooccurrence.lexicon.IncrementalIndexedLexicon;
 import org.junit.Test;
 
 import java.io.File;

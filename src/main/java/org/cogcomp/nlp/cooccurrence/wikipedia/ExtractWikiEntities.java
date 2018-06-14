@@ -1,4 +1,4 @@
-package org.cogcomp.nlp.statistics.cooccurrence.wikipedia;
+package org.cogcomp.nlp.cooccurrence.wikipedia;
 
 import edu.illinois.cs.cogcomp.core.io.LineIO;
 import edu.illinois.cs.cogcomp.thrift.base.Labeling;
@@ -9,7 +9,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.thrift.TDeserializer;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TBinaryProtocol;
-import org.cogcomp.nlp.statistics.cooccurrence.util.CoocUtil;
+import org.cogcomp.nlp.cooccurrence.util.CoocUtil;
 
 import java.io.*;
 import java.util.List;

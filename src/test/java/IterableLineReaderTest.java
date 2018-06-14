@@ -1,4 +1,4 @@
-import org.cogcomp.nlp.statistics.cooccurrence.util.IterableLineReader;
+import org.cogcomp.nlp.cooccurrence.util.IterableLineReader;
 import org.junit.Test;
 
 import java.io.BufferedWriter;
