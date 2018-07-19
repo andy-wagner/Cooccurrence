@@ -83,7 +83,11 @@ public class ImmutableTermDocMatrix {
      * @return total occurrence counts of the term across all documents
      */
     public int getTermTotalCount(String term) {
-        return (int) _getTermTotalCount(lex.putOrGet(term));
+        int id = lex.putOrGet(term);
+        if (id >= this.lexSize)
+            return 0;
+        else
+            return (int) _getTermTotalCount(id);
     }
 
     private double _getTermTotalCount(int termID) {
@@ -97,7 +101,12 @@ public class ImmutableTermDocMatrix {
      * @return co-occurrence counts of term1 and term2
      */
     public int getCoocCount(String term1, String term2) {
-        return (int) _getCoocCount(lex.putOrGet(term1), lex.putOrGet(term2));
+        int id1 = lex.putOrGet(term1);
+        int id2 = lex.putOrGet(term2);
+        if (id1 >= this.lexSize || id2 >= this.lexSize)
+            return 0;
+        else
+            return (int) _getCoocCount(id1, id2);
     }
 
     private double _getCoocCount(int term1, int term2) {
@@ -111,7 +120,12 @@ public class ImmutableTermDocMatrix {
      * @return count of term in doc
      */
     public int getTermCountInDoc(String term, String doc) {
-        return (int)_getDocwiseTermCount(lex.putOrGet(term), docid.putOrGet(doc));
+        int termId = lex.putOrGet(term);
+        int docId = lex.putOrGet(doc);
+        if (termId >= this.lexSize || docId >= this.lexSize)
+            return 0;
+        else
+            return (int)_getDocwiseTermCount(termId, docId);
     }
 
     private double _getDocwiseTermCount(int termId, int docId) {

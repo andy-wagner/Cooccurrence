@@ -52,10 +52,10 @@ public class TermDocMatTest {
         assertEquals(lex.size(), mat.getNumTerm());
         assertEquals(mat.getTermTotalCount(word), 12);
         assertEquals(mat.getTermTotalCount("Gibberish"), 0);
+        assertEquals(mat.getTermCountInDoc("Gibberish", "1121146.txt"),0);
         proc.close();
 
         ImmutableTermTermMatrix cooc = CoocMatrixFactory.createCoocMatrixFromTermDocMatrix(mat);
-        System.out.println(cooc.getClass().getCanonicalName());
     }
 
     @Test
