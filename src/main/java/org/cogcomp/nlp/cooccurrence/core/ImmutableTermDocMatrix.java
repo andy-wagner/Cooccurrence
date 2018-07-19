@@ -144,11 +144,19 @@ public class ImmutableTermDocMatrix {
         return this.lex;
     }
 
+    public IncrementalIndexedLexicon getDocIdMapping() {
+        return this.docid;
+    }
+
     @Override
     public String toString() {
         return this.tdMat.toString();
     }
 
+    public void printStatistics(){
+        System.out.println("Rows:\t" + this.tdMat.rows());
+        System.out.println("Columns:\t" + this.tdMat.columns());
+    }
     /**
      * Save the matrix into five separate files, which will have the same file stem but different extensions.
      *

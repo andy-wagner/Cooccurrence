@@ -72,4 +72,13 @@ public class IncrementalIndexedLexicon {
         out.write(bytearr);
         out.close();
     }
+
+    public void savePlainText(String path) throws IOException {
+        BufferedWriter bw = new BufferedWriter(new FileWriter(path));
+        for (int i = 0; i < this.lexicon.size(); i++) {
+            bw.write(this.getTermFromId(i));
+            bw.newLine();
+        }
+        bw.close();
+    }
 }
