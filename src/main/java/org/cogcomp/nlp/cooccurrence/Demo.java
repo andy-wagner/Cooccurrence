@@ -14,8 +14,8 @@ public class Demo {
 
     public static void main(String[] args) {
         // This is where I stored the processed counts
-        String directory = "H:\\work\\dataset\\cooc_mat";
-        String matname = "ww-curid";
+        String directory = "H:\\work\\dataset\\cooc_mat\\test";
+        String matname = "ww_curid";
 
         // Load the saved counts from the above location into a Term-Document matrix
         // In this case, "Term"s are Wikified links that appear on each Wikipedia page ("Document")
@@ -39,18 +39,18 @@ public class Demo {
         String obama = "534366";        //curid for Barack_Obama
         String hillary = "5043192";     //curid for Hillary_Clinton
 
-        String spanish_empire  = "534366";        //curid for Barack_Obama
-        String us_ele = "11300695";     //curid for Hillary_Clinton
+        String spanish_empire  = "41298";        //curid for Barack_Obama
+        String us_ele = "10670916";     //curid for Hillary_Clinton
 
         tdmat.printStatistics();
 
-        try {
-            tdmat.getLexicon().savePlainText("H:\\work\\dataset\\cooc_mat\\lexicon-mapping\\lex.txt");
-            tdmat.getDocIdMapping().savePlainText("H:\\work\\dataset\\cooc_mat\\lexicon-mapping\\doc.txt");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        int count1 = tdmat.getTermCountInDoc(us_ele, spanish_empire);
+//        try {
+//            tdmat.getLexicon().savePlainText("H:\\work\\dataset\\cooc_mat\\lexicon-mapping\\lex.txt");
+//            tdmat.getDocIdMapping().savePlainText("H:\\work\\dataset\\cooc_mat\\lexicon-mapping\\doc.txt");
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+        int count1 = tdmat.getTermCountInDoc(spanish_empire, us_ele);
         logger.info("# of times Barack_Obama appears on Hillary_Clinton's page:\t{}", count1);
 
 //        int count2 = tdmat.getTermCountInDoc(hillary, obama);
