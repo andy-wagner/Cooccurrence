@@ -121,8 +121,8 @@ public class ImmutableTermDocMatrix {
      */
     public int getTermCountInDoc(String term, String doc) {
         int termId = lex.putOrGet(term);
-        int docId = lex.putOrGet(doc);
-        if (termId >= this.lexSize || docId >= this.lexSize)
+        int docId = docid.putOrGet(doc);
+        if (termId >= this.lexSize || docId >= this.docCount)
             return 0;
         else
             return (int)_getDocwiseTermCount(termId, docId);
