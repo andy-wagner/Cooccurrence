@@ -23,7 +23,6 @@ public class ImmutableTermTermMatrix {
     ImmutableTermTermMatrix(ImmutableTermDocMatrix tdmat) {
         this.lex = tdmat.getLexicon();
         this.coocMat = tdmat.tdMat.multiplyByItsTranspose();
-        System.out.println(coocMat.getClass().getCanonicalName());
     }
 
     public int getCoocCount(String term1, String term2) {
