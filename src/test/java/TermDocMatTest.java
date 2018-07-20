@@ -53,6 +53,7 @@ public class TermDocMatTest {
         assertEquals(mat.getTermTotalCount(word), 12);
         assertEquals(mat.getTermTotalCount("Gibberish"), 0);
         assertEquals(mat.getTermCountInDoc("Gibberish", "1121146.txt"),0);
+        assertEquals(mat.getTermCountInDoc("this", "1121146.txt"),3);
         proc.close();
 
         ImmutableTermTermMatrix cooc = CoocMatrixFactory.createCoocMatrixFromTermDocMatrix(mat);
